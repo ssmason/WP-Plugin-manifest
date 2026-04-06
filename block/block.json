@@ -1,0 +1,54 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "satori-manifest/price-list",
+	"title": "Price List",
+	"category": "widgets",
+	"icon": "list-view",
+	"description": "Display a structured price list with sections and items. Powered by Satori Manifest.",
+	"keywords": [ "price", "list", "menu", "services", "manifest" ],
+	"textdomain": "satori-manifest",
+	"editorScript": "file:./build/index.js",
+	"editorStyle": "file:../src/scss/editor/build/editor.css",
+	"style": "file:../src/scss/frontend/build/frontend.css",
+	"render": "file:./render.php",
+	"attributes": {
+		"sectionIds": {
+			"type": "array",
+			"items": { "type": "number" },
+			"default": []
+		},
+		"layout": {
+			"type": "string",
+			"default": "single-column",
+			"enum": [ "single-column", "two-column", "card-style", "minimal" ]
+		},
+		"showPrices": {
+			"type": "boolean",
+			"default": true
+		},
+		"showDescriptions": {
+			"type": "boolean",
+			"default": true
+		},
+		"pricePrefix": {
+			"type": "string",
+			"default": ""
+		}
+	},
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ],
+		"color": {
+			"background": true,
+			"text": true
+		},
+		"spacing": {
+			"padding": true,
+			"margin": true
+		},
+		"typography": {
+			"fontSize": true
+		}
+	}
+}

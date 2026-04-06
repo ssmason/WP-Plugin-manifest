@@ -1,0 +1,34 @@
+// Satori Manifest — Block editor styles
+//
+// @package SatoriManifest
+// @author  Stephen Mason <steve@satori-digital.com>
+// @since   1.0.0
+
+// Editor-side preview for the price-list block.
+.satori-manifest-price-list {
+	// Shared layout shell — mirrors frontend.
+	padding: 1em 0;
+
+	&__preview {
+		border: 1px dashed #c3c4c7;
+		border-radius: 4px;
+		padding: 16px;
+	}
+}
+
+.satori-manifest-section-preview {
+	margin-bottom: 16px;
+
+	&__title {
+		font-size: 1.1em;
+		font-weight: 600;
+		margin: 0 0 4px;
+	}
+
+	&__hint {
+		color: #646970;
+		font-size: 12px;
+		font-style: italic;
+		margin: 0;
+	}
+}

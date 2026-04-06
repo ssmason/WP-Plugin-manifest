@@ -1,0 +1,160 @@
+// Satori Manifest — Frontend stylesheet
+//
+// Styles for the rendered price-list block on the public-facing site.
+// Uses layout modifier classes driven by the block's layout attribute.
+//
+// @package SatoriManifest
+// @author  Stephen Mason <steve@satori-digital.com>
+// @since   1.0.0
+
+// ─── Variables ───────────────────────────────────────────────────────────────
+
+$sm-fe-color-heading:    #1d2327;
+$sm-fe-color-text:       #3c434a;
+$sm-fe-color-light:      #646970;
+$sm-fe-color-border:     #dcdcde;
+$sm-fe-color-price:      #1d2327;
+$sm-fe-space-sm:         8px;
+$sm-fe-space-md:         16px;
+$sm-fe-space-lg:         32px;
+$sm-fe-radius:           6px;
+
+// ─── Wrapper ─────────────────────────────────────────────────────────────────
+
+.satori-manifest-price-list {
+	container-type: inline-size;
+}
+
+// ─── Section ─────────────────────────────────────────────────────────────────
+
+.satori-manifest-price-list__section {
+	margin-bottom: $sm-fe-space-lg;
+
+	&:last-child {
+		margin-bottom: 0;
+	}
+}
+
+.satori-manifest-price-list__section-title {
+	font-size: 1.25em;
+	font-weight: 700;
+	color: $sm-fe-color-heading;
+	border-bottom: 2px solid $sm-fe-color-border;
+	padding-bottom: $sm-fe-space-sm;
+	margin: 0 0 $sm-fe-space-md;
+}
+
+// ─── Items list ──────────────────────────────────────────────────────────────
+
+.satori-manifest-price-list__items {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.satori-manifest-price-list__item {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: $sm-fe-space-md;
+	padding: $sm-fe-space-sm 0;
+	border-bottom: 1px solid $sm-fe-color-border;
+
+	&:last-child {
+		border-bottom: none;
+	}
+}
+
+.satori-manifest-price-list__item-label {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.satori-manifest-price-list__item-name {
+	font-weight: 600;
+	color: $sm-fe-color-heading;
+}
+
+.satori-manifest-price-list__item-desc {
+	font-size: 0.875em;
+	color: $sm-fe-color-light;
+}
+
+.satori-manifest-price-list__item-price {
+	font-weight: 700;
+	color: $sm-fe-color-price;
+	white-space: nowrap;
+	flex-shrink: 0;
+}
+
+.satori-manifest-price-list__item-prefix {
+	font-weight: 400;
+	font-size: 0.85em;
+	color: $sm-fe-color-light;
+	margin-right: 2px;
+}
+
+// ─── Layout: two-column ──────────────────────────────────────────────────────
+
+.satori-manifest-price-list.is-layout-two-column {
+
+	.satori-manifest-price-list__section {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 0 $sm-fe-space-lg;
+	}
+
+	.satori-manifest-price-list__section-title {
+		grid-column: 1 / -1;
+	}
+}
+
+// ─── Layout: card-style ──────────────────────────────────────────────────────
+
+.satori-manifest-price-list.is-layout-card-style {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+	gap: $sm-fe-space-lg;
+
+	.satori-manifest-price-list__section {
+		margin-bottom: 0;
+		background: #fff;
+		border: 1px solid $sm-fe-color-border;
+		border-radius: $sm-fe-radius;
+		padding: $sm-fe-space-md;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+	}
+}
+
+// ─── Layout: minimal ─────────────────────────────────────────────────────────
+
+.satori-manifest-price-list.is-layout-minimal {
+
+	.satori-manifest-price-list__section-title {
+		border-bottom: none;
+		font-size: 1.1em;
+		font-weight: 500;
+		letter-spacing: 0.03em;
+		text-transform: uppercase;
+		color: $sm-fe-color-light;
+	}
+
+	.satori-manifest-price-list__item {
+		border-bottom: none;
+		padding: $sm-fe-space-sm * 0.5 0;
+	}
+}
+
+// ─── Container query: responsive two-column ──────────────────────────────────
+
+@container (max-width: 600px) {
+
+	.satori-manifest-price-list.is-layout-two-column {
+
+		.satori-manifest-price-list__section {
+			grid-template-columns: 1fr;
+		}
+	}
+}
