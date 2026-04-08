@@ -20,9 +20,8 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
 
-require_once __DIR__ . '/includes/class-multisite.php';
 require_once __DIR__ . '/includes/class-post-types.php';
-require_once __DIR__ . '/includes/class-options.php';
+require_once __DIR__ . '/includes/class-multisite.php';
 
 if ( is_multisite() ) {
 	SatoriManifest\Multisite::network_uninstall();

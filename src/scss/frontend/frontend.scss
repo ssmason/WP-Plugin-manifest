@@ -1,43 +1,67 @@
 // Satori Manifest — Frontend stylesheet
 //
 // Styles for the rendered price-list block on the public-facing site.
-// Uses layout modifier classes driven by the block's layout attribute.
+// Layout modifier classes (is-layout-*) control structure.
+// Colour scheme modifier classes (is-scheme-*) control colour.
+// The two are independent and can be combined freely.
 //
 // @package SatoriManifest
 // @author  Stephen Mason <steve@satori-digital.com>
 // @since   1.0.0
 
-// ─── Variables ───────────────────────────────────────────────────────────────
+@use "sass:color";
 
-$sm-fe-color-heading:    #1d2327;
-$sm-fe-color-text:       #3c434a;
-$sm-fe-color-light:      #646970;
-$sm-fe-color-border:     #dcdcde;
-$sm-fe-color-price:      #1d2327;
-$sm-fe-space-sm:         8px;
-$sm-fe-space-md:         16px;
-$sm-fe-space-lg:         32px;
-$sm-fe-radius:           6px;
+// ─── Design tokens ───────────────────────────────────────────────────────────
 
-// ─── Wrapper ─────────────────────────────────────────────────────────────────
+// Typography & neutral colours — kept close to standard WP admin greys so
+// the Default scheme integrates with any theme without clashing.
+$sm-fe-color-heading:  #1d2327;
+$sm-fe-color-text:     #3c434a;
+$sm-fe-color-light:    #646970;
+$sm-fe-color-border:   #dcdcde;
+$sm-fe-color-price:    #1d2327;
+
+// Brand palette (matches tailwind.config.js tokens).
+$sm-white:    #fdfaf5;
+$sm-cream:    #f5f0e8;
+$sm-warm:     #ede6d6;
+$sm-sand:     #d4c5a9;
+$sm-stone:    #9a8a75;
+$sm-mid:      #5c4e3a;
+$sm-dark:     #1c1712;
+$sm-terra:    #b5704a;
+$sm-terra-dk: #8c4e2f;
+
+// Spacing & shape.
+$sm-fe-space-sm: 8px;
+$sm-fe-space-md: 16px;
+$sm-fe-space-lg: 32px;
+$sm-fe-radius:   6px;
+
+// ─── Base wrapper ─────────────────────────────────────────────────────────────
 
 .satori-manifest-price-list {
 	container-type: inline-size;
+	border-radius: $sm-fe-radius;
 }
 
-// ─── Section ─────────────────────────────────────────────────────────────────
+// ─── Base section ─────────────────────────────────────────────────────────────
 
 .satori-manifest-price-list__section {
 	margin-bottom: $sm-fe-space-lg;
+	border-radius: $sm-fe-radius;
 
 	&:last-child {
 		margin-bottom: 0;
 	}
 }
 
-.satori-manifest-price-list__section-title {
-	font-size: 1.25em;
-	font-weight: 700;
+// Double-class specificity + !important on font properties ensures user
+// typography choices override any theme h3 rules (e.g. Tailwind Preflight).
+.satori-manifest-price-list .satori-manifest-price-list__section-title {
+	font-family: var(--sm-title-font, inherit) !important; // stylelint-disable-line declaration-no-important
+	font-size: var(--sm-title-size, 1.25em) !important; // stylelint-disable-line declaration-no-important
+	font-weight: var(--sm-title-weight, 700) !important; // stylelint-disable-line declaration-no-important
 	color: $sm-fe-color-heading;
 	border-bottom: 2px solid $sm-fe-color-border;
 	padding-bottom: $sm-fe-space-sm;
@@ -73,7 +97,9 @@ $sm-fe-radius:           6px;
 }
 
 .satori-manifest-price-list__item-name {
-	font-weight: 600;
+	font-family: var(--sm-item-font, inherit);
+	font-size: var(--sm-item-size, inherit);
+	font-weight: var(--sm-item-weight, 600);
 	color: $sm-fe-color-heading;
 }
 
@@ -97,33 +123,39 @@ $sm-fe-radius:           6px;
 }
 
 // ─── Layout: two-column ──────────────────────────────────────────────────────
+// Sections sit side-by-side in a two-column grid. The manifest container
+// becomes the grid — each direct section child becomes a column.
 
 .satori-manifest-price-list.is-layout-two-column {
 
-	.satori-manifest-price-list__section {
+	.satori-manifest-price-list__manifest {
 		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: 0 $sm-fe-space-lg;
-	}
-
-	.satori-manifest-price-list__section-title {
-		grid-column: 1 / -1;
+		grid-template-columns: repeat(2, 1fr);
+		gap: $sm-fe-space-lg;
+		align-items: start;
 	}
 }
 
 // ─── Layout: card-style ──────────────────────────────────────────────────────
+// Sections are displayed as individual cards in an auto-fill grid.
+// The grid sits on __manifest so sections (not manifest containers) become
+// the grid items — matching the two-column pattern.
 
 .satori-manifest-price-list.is-layout-card-style {
-	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-	gap: $sm-fe-space-lg;
+
+	.satori-manifest-price-list__manifest {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+		gap: $sm-fe-space-lg;
+		align-items: start;
+	}
 
 	.satori-manifest-price-list__section {
 		margin-bottom: 0;
 		background: #fff;
 		border: 1px solid $sm-fe-color-border;
-		border-radius: $sm-fe-radius;
 		padding: $sm-fe-space-md;
+		border-radius: $sm-fe-radius;
 		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 	}
 }
@@ -143,17 +175,231 @@ $sm-fe-radius:           6px;
 
 	.satori-manifest-price-list__item {
 		border-bottom: none;
-		padding: $sm-fe-space-sm * 0.5 0;
+		padding: ($sm-fe-space-sm * 0.5) 0;
 	}
 }
 
-// ─── Container query: responsive two-column ──────────────────────────────────
+// ─── Colour scheme: warm ─────────────────────────────────────────────────────
+
+.satori-manifest-price-list.is-scheme-warm {
+	background: $sm-cream;
+	color: $sm-mid;
+	padding: $sm-fe-space-lg;
+
+	.satori-manifest-price-list__section {
+		background: $sm-warm;
+		padding: $sm-fe-space-md;
+	}
+
+	.satori-manifest-price-list__section-title {
+		color: $sm-mid;
+		border-color: $sm-sand;
+	}
+
+	.satori-manifest-price-list__item {
+		border-color: $sm-sand;
+	}
+
+	.satori-manifest-price-list__item-name {
+		color: $sm-mid;
+	}
+
+	.satori-manifest-price-list__item-desc {
+		color: $sm-stone;
+	}
+
+	.satori-manifest-price-list__item-price {
+		color: $sm-mid;
+	}
+
+	.satori-manifest-price-list__item-prefix {
+		color: $sm-stone;
+	}
+}
+
+// ─── Colour scheme: terracotta ───────────────────────────────────────────────
+
+.satori-manifest-price-list.is-scheme-terracotta {
+	background: $sm-warm;
+	color: $sm-dark;
+	padding: $sm-fe-space-lg;
+
+	.satori-manifest-price-list__section {
+		background: $sm-cream;
+		padding: $sm-fe-space-md;
+	}
+
+	.satori-manifest-price-list__section-title {
+		color: $sm-terra;
+		border-color: $sm-sand;
+	}
+
+	.satori-manifest-price-list__item {
+		border-color: $sm-sand;
+	}
+
+	.satori-manifest-price-list__item-name {
+		color: $sm-dark;
+	}
+
+	.satori-manifest-price-list__item-desc {
+		color: $sm-stone;
+	}
+
+	.satori-manifest-price-list__item-price {
+		color: $sm-terra-dk;
+	}
+
+	.satori-manifest-price-list__item-prefix {
+		color: $sm-stone;
+	}
+}
+
+// ─── Colour scheme: dark ─────────────────────────────────────────────────────
+
+.satori-manifest-price-list.is-scheme-dark {
+	background: $sm-dark;
+	color: $sm-white;
+	padding: $sm-fe-space-lg;
+	border-radius: $sm-fe-radius;
+
+	.satori-manifest-price-list__section {
+		background: $sm-mid;
+		padding: $sm-fe-space-md;
+	}
+
+	.satori-manifest-price-list__section-title {
+		color: $sm-white;
+		border-color: $sm-stone;
+	}
+
+	.satori-manifest-price-list__item {
+		border-color: $sm-stone;
+	}
+
+	.satori-manifest-price-list__item-name {
+		color: $sm-white;
+	}
+
+	.satori-manifest-price-list__item-desc {
+		color: $sm-sand;
+	}
+
+	.satori-manifest-price-list__item-price {
+		color: $sm-white;
+	}
+
+	.satori-manifest-price-list__item-prefix {
+		color: $sm-stone;
+	}
+}
+
+// ─── Colour scheme: minimal ───────────────────────────────────────────────────
+
+.satori-manifest-price-list.is-scheme-minimal {
+	color: $sm-mid;
+
+	.satori-manifest-price-list__section {
+		background: color.adjust($sm-cream, $lightness: 3%);
+		padding: $sm-fe-space-md;
+	}
+
+	.satori-manifest-price-list__section-title {
+		color: $sm-mid;
+		border-color: $sm-sand;
+	}
+
+	.satori-manifest-price-list__item {
+		border-color: $sm-sand;
+	}
+
+	.satori-manifest-price-list__item-name {
+		color: $sm-mid;
+	}
+
+	.satori-manifest-price-list__item-desc {
+		color: $sm-stone;
+	}
+
+	.satori-manifest-price-list__item-price {
+		color: $sm-mid;
+	}
+
+	.satori-manifest-price-list__item-prefix {
+		color: $sm-stone;
+	}
+}
+
+// ─── Modifier: no background ─────────────────────────────────────────────────
+// Applied when showBackground is false. Strips backgrounds from wrapper and
+// sections regardless of colour scheme.
+
+.satori-manifest-price-list.has-no-background {
+	background: transparent !important; // stylelint-disable-line declaration-no-important
+	padding: 0 !important; // stylelint-disable-line declaration-no-important
+}
+
+// ─── Modifier: section title background ──────────────────────────────────────
+// Applied when titleBgColor is set. Colours the section heading pill and
+// adjusts spacing so the border-bottom is replaced by the background block.
+
+.satori-manifest-price-list.has-title-bg {
+
+	.satori-manifest-price-list__section-title {
+		background: var(--sm-title-bg);
+		padding: 6px 10px;
+		border-radius: 3px;
+		border-bottom: none;
+		margin-bottom: $sm-fe-space-md;
+	}
+}
+
+// ─── Colour scheme: custom ───────────────────────────────────────────────────
+// Uses CSS custom properties set as inline styles by render.php / edit.js.
+// Falls back to neutral values if properties are absent.
+
+.satori-manifest-price-list.is-scheme-custom {
+	background: var(--sm-custom-bg, #{$sm-cream});
+	color: var(--sm-custom-accent, #{$sm-dark});
+	padding: $sm-fe-space-lg;
+
+	.satori-manifest-price-list__section {
+		background: rgba(255, 255, 255, 0.2);
+		padding: $sm-fe-space-md;
+	}
+
+	.satori-manifest-price-list__section-title {
+		// --sm-custom-title is independent; falls back to accent then the dark token.
+		color: var(--sm-custom-title, var(--sm-custom-accent, #{$sm-dark}));
+		border-color: var(--sm-custom-accent, #{$sm-dark});
+	}
+
+	.satori-manifest-price-list__item {
+		border-color: var(--sm-custom-accent, #{$sm-dark});
+	}
+
+	.satori-manifest-price-list__item-name {
+		color: var(--sm-custom-accent, #{$sm-dark});
+	}
+
+	.satori-manifest-price-list__item-desc,
+	.satori-manifest-price-list__item-prefix {
+		color: var(--sm-custom-accent, #{$sm-dark});
+		opacity: 0.65;
+	}
+
+	.satori-manifest-price-list__item-price {
+		color: var(--sm-custom-accent, #{$sm-dark});
+	}
+}
+
+// ─── Responsive: collapse two-column below 600px ─────────────────────────────
 
 @container (max-width: 600px) {
 
 	.satori-manifest-price-list.is-layout-two-column {
 
-		.satori-manifest-price-list__section {
+		.satori-manifest-price-list__manifest {
 			grid-template-columns: 1fr;
 		}
 	}

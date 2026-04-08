@@ -1,34 +1,180 @@
 // Satori Manifest — Block editor styles
 //
+// Editor-only styles loaded via editorStyle in block.json.
+// The frontend.scss (loaded via the "style" key) already applies in the
+// editor for colour schemes and layouts. This file adds:
+//   1. Editor chrome (padding, dashed border on empty state)
+//   2. Colour scheme picker UI in the inspector sidebar
+//
 // @package SatoriManifest
 // @author  Stephen Mason <steve@satori-digital.com>
 // @since   1.0.0
 
-// Editor-side preview for the price-list block.
-.satori-manifest-price-list {
-	// Shared layout shell — mirrors frontend.
-	padding: 1em 0;
+// ─── Block preview chrome ─────────────────────────────────────────────────────
 
-	&__preview {
-		border: 1px dashed #c3c4c7;
-		border-radius: 4px;
-		padding: 16px;
+.satori-manifest-price-list {
+	padding: 1em 0;
+}
+
+// Notice shown above demo content when no manifests are selected.
+.satori-manifest-price-list__demo-notice {
+	font-size: 11px;
+	color: #646970;
+	background: #f0f0f1;
+	border: 1px dashed #c3c4c7;
+	border-radius: 4px;
+	padding: 6px 10px;
+	margin-bottom: 12px;
+	text-align: center;
+}
+
+// ─── Colour scheme swatch picker ─────────────────────────────────────────────
+// Renders in the InspectorControls sidebar as a wrapped row of swatches.
+// Overrides WordPress Button component defaults (min-height, padding,
+// box-shadow) which otherwise cause rows to visually overlap when wrapping.
+
+.satori-manifest-scheme-picker {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	margin-top: 4px;
+}
+
+// Override WordPress Button component defaults that cause row overlap.
+.satori-manifest-scheme-option.components-button {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 4px;
+	padding: 4px;
+	min-height: 0;
+	height: auto;
+	border: 2px solid transparent;
+	border-radius: 6px;
+	background: none !important;
+	box-shadow: none !important;
+	cursor: pointer;
+	transition: border-color 0.15s ease;
+	min-width: 52px;
+
+	&:hover {
+		border-color: #007cba;
+		background: none !important;
+		box-shadow: none !important;
+	}
+
+	&:focus:not(:disabled) {
+		box-shadow: none !important;
+		outline: 2px solid #007cba;
+		outline-offset: 2px;
+	}
+
+	&.is-active {
+		border-color: #007cba;
 	}
 }
 
-.satori-manifest-section-preview {
-	margin-bottom: 16px;
+// Element selectors must be top-level — nesting inside the compound selector
+// above would generate .components-button__swatch which never matches.
+.satori-manifest-scheme-option__swatch {
+	display: block;
+	width: 36px;
+	height: 36px;
+	border-radius: 50%;
+	border: 2px solid;
+	flex-shrink: 0;
+}
 
-	&__title {
-		font-size: 1.1em;
-		font-weight: 600;
-		margin: 0 0 4px;
+// Custom swatch shows a rainbow gradient to indicate "any colour".
+.satori-manifest-scheme-option__swatch--custom {
+	background: conic-gradient(#ff6b6b, #ffd93d, #6bcb77, #4d96ff, #ff6b6b);
+	border-color: #888;
+}
+
+// ─── Typography panel sub-headings ───────────────────────────────────────────
+
+.satori-manifest-typo-label {
+	font-size: 11px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	color: #1e1e1e;
+	margin: 0 0 8px;
+
+	&--spaced {
+		margin-top: 16px;
+	}
+}
+
+// ─── Custom colour pickers ────────────────────────────────────────────────────
+
+.satori-manifest-custom-colors {
+	display: flex;
+	gap: 12px;
+	margin-top: 12px;
+}
+
+.satori-manifest-custom-color {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 4px;
+	flex: 1;
+
+	&__label {
+		font-size: 11px;
+		color: #1e1e1e;
+		align-self: flex-start;
 	}
 
-	&__hint {
-		color: #646970;
-		font-size: 12px;
-		font-style: italic;
-		margin: 0;
+	&__input {
+		width: 100%;
+		height: 36px;
+		padding: 2px;
+		border: 1px solid #ddd;
+		border-radius: 4px;
+		cursor: pointer;
+		background: none;
 	}
+}
+
+// Inline row: label left, small colour swatch + Remove button right.
+.satori-manifest-title-bg-control {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	margin-bottom: 8px;
+
+	&__label {
+		font-size: 11px;
+		color: #1e1e1e;
+		flex: 1;
+	}
+
+	&__actions {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		flex-shrink: 0;
+	}
+
+	&__input {
+		width: 28px;
+		height: 28px;
+		padding: 1px;
+		border: 1px solid #ddd;
+		border-radius: 3px;
+		cursor: pointer;
+		background: none;
+		flex-shrink: 0;
+	}
+}
+
+.satori-manifest-scheme-option__label {
+	font-size: 10px;
+	line-height: 1.2;
+	text-align: center;
+	color: #1e1e1e;
+	white-space: nowrap;
 }

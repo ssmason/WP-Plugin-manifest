@@ -40,45 +40,28 @@ class Assets {
 	 * @return void
 	 */
 	public static function enqueue_admin( string $hook_suffix ): void {
-		if ( ! self::is_plugin_admin_page( $hook_suffix ) ) {
+		if ( ! self::is_manifest_edit_screen( $hook_suffix ) ) {
 			return;
 		}
+
+		$admin_js_path  = SATORI_MANIFEST_PATH . 'block/build/admin.js';
+		$admin_css_path = SATORI_MANIFEST_PATH . 'src/scss/admin/build/admin.css';
+		$admin_js_ver   = file_exists( $admin_js_path ) ? (string) filemtime( $admin_js_path ) : SATORI_MANIFEST_VERSION;
+		$admin_css_ver  = file_exists( $admin_css_path ) ? (string) filemtime( $admin_css_path ) : SATORI_MANIFEST_VERSION;
 
 		wp_enqueue_style(
 			'satori-manifest-admin',
 			SATORI_MANIFEST_URL . 'src/scss/admin/build/admin.css',
 			array(),
-			SATORI_MANIFEST_VERSION
+			$admin_css_ver
 		);
 
 		wp_enqueue_script(
 			'satori-manifest-admin',
 			SATORI_MANIFEST_URL . 'block/build/admin.js',
-			array( 'wp-util' ),
-			SATORI_MANIFEST_VERSION,
+			array(),
+			$admin_js_ver,
 			true
-		);
-
-		wp_localize_script(
-			'satori-manifest-admin',
-			'satoriManifestAdmin',
-			array(
-				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
-				'nonces'  => array(
-					'saveSection'     => Security::create_nonce( 'save_section' ),
-					'deleteSection'   => Security::create_nonce( 'delete_section' ),
-					'reorderSections' => Security::create_nonce( 'reorder_sections' ),
-					'savePattern'     => Security::create_nonce( 'save_pattern' ),
-				),
-				'i18n'    => array(
-					'confirmDelete' => __( 'Are you sure you want to delete this section? This cannot be undone.', 'satori-manifest' ),
-					'saving'        => __( 'Saving…', 'satori-manifest' ),
-					'saved'         => __( 'Saved', 'satori-manifest' ),
-					'error'         => __( 'An error occurred. Please try again.', 'satori-manifest' ),
-					'addSection'    => __( 'Add Section', 'satori-manifest' ),
-					'addItem'       => __( 'Add Item', 'satori-manifest' ),
-				),
-			)
 		);
 	}
 
@@ -121,29 +104,20 @@ class Assets {
 	}
 
 	/**
-	 * Checks whether the current admin page belongs to this plugin.
+	 * Returns true only on the manifest CPT add/edit screens.
 	 *
 	 * @author Stephen Mason <steve@satori-digital.com>
 	 * @since  1.0.0
 	 * @param  string $hook_suffix  The current admin page hook suffix.
 	 * @return bool
 	 */
-	private static function is_plugin_admin_page( string $hook_suffix ): bool {
-		$plugin_pages = array(
-			'toplevel_page_satori-manifest',
-			'manifest_page_satori-manifest-settings',
-			'edit.php?post_type=sm_price_section',
-		);
-
-		foreach ( $plugin_pages as $page ) {
-			if ( false !== strpos( $hook_suffix, 'satori-manifest' ) ) {
-				return true;
-			}
+	private static function is_manifest_edit_screen( string $hook_suffix ): bool {
+		if ( ! in_array( $hook_suffix, array( 'post.php', 'post-new.php' ), true ) ) {
+			return false;
 		}
 
-		// Also load on section CPT screens.
 		global $post_type;
-		return 'sm_price_section' === $post_type;
+		return Post_Types::CPT_MANIFEST === $post_type;
 	}
 
 	/**

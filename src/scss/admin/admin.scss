@@ -1,8 +1,12 @@
 // Satori Manifest — Admin stylesheet entry point
 //
+// Imports variables then the meta-box partial. Each partial covers one
+// distinct area of the admin UI — add new partials here as the plugin grows
+// rather than adding rules directly to this file.
+//
 // @package SatoriManifest
 // @author  Stephen Mason <steve@satori-digital.com>
 // @since   1.0.0
 
 @use "variables" as *;
-@use "options" as *;
+@use "meta-box" as *;

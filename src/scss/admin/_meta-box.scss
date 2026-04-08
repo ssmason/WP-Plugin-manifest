@@ -1,0 +1,174 @@
+// Satori Manifest — Meta box styles
+//
+// Styles for the "Sections & Items" meta box on the sm_manifest CPT edit
+// screen. Covers the sections toolbar, individual section panels (with
+// collapse/expand and up/down reorder controls), and the items table.
+//
+// @package SatoriManifest
+// @author  Stephen Mason <steve@satori-digital.com>
+// @since   1.0.0
+
+@use "sass:color";
+@use "variables" as *;
+
+// ─── Sections toolbar ────────────────────────────────────────────────────────
+
+.satori-manifest-sections-toolbar {
+	margin-bottom: $sm-space-md;
+}
+
+// ─── Individual section ───────────────────────────────────────────────────────
+
+.satori-manifest-sections {
+	margin: 0;
+	padding: 0;
+}
+
+.satori-manifest-section {
+	background: #fff;
+	border: 1px solid $sm-color-border;
+	border-radius: $sm-radius;
+	margin-bottom: $sm-space-md;
+	overflow: hidden;
+
+	&:last-child {
+		margin-bottom: 0;
+	}
+
+	&__header {
+		display: flex;
+		align-items: center;
+		gap: $sm-space-sm;
+		padding: $sm-space-sm $sm-space-md;
+		background: $sm-color-bg;
+		border-bottom: 1px solid $sm-color-border;
+	}
+
+	// Collapse / expand chevron button.
+	&__toggle {
+		flex-shrink: 0;
+		background: none;
+		border: none;
+		padding: 0;
+		cursor: pointer;
+		color: $sm-color-text-light;
+		display: flex;
+		align-items: center;
+
+		.dashicons {
+			transition: transform 0.2s ease;
+		}
+
+		// Rotate chevron when section is collapsed.
+		&[aria-expanded="false"] .dashicons {
+			transform: rotate(-90deg);
+		}
+
+		&:hover {
+			color: $sm-color-primary;
+		}
+	}
+
+	&__title-input {
+		flex: 1;
+		font-size: $sm-font-lg;
+		font-weight: 600;
+		border: 1px solid transparent;
+		background: transparent;
+		padding: $sm-space-xs $sm-space-sm;
+		border-radius: $sm-radius;
+
+		&:focus {
+			background: #fff;
+			border-color: $sm-color-primary;
+			box-shadow: 0 0 0 1px $sm-color-primary;
+			outline: none;
+		}
+	}
+
+	// Up / down reorder buttons stacked vertically.
+	&__order {
+		display: flex;
+		flex-direction: column;
+		gap: 0;
+		flex-shrink: 0;
+
+		button {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding: 0;
+			line-height: 1;
+			color: $sm-color-text-light;
+			text-decoration: none !important;
+
+			&:hover {
+				color: $sm-color-primary;
+				text-decoration: none !important;
+			}
+
+			.dashicons {
+				font-size: 16px;
+				width: 16px;
+				height: 16px;
+			}
+		}
+	}
+
+	// × Remove button.
+	&__remove {
+		flex-shrink: 0;
+		color: $sm-color-text-light;
+		font-size: $sm-font-sm;
+		text-decoration: none !important;
+
+		&:hover {
+			color: $sm-color-danger;
+			text-decoration: none !important;
+		}
+	}
+
+	// Body — hidden when section is collapsed.
+	&__body {
+		&.is-collapsed {
+			display: none;
+		}
+	}
+}
+
+// ─── Items table ─────────────────────────────────────────────────────────────
+
+.satori-manifest-items {
+	margin: 0 !important;
+	border: none !important;
+
+	thead th {
+		font-size: $sm-font-sm;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		color: $sm-color-text-light;
+	}
+
+	input[type="text"],
+	input[type="number"] {
+		width: 100%;
+		margin: 0;
+	}
+
+	&__add-row {
+		margin: $sm-space-xs 0;
+	}
+}
+
+.satori-manifest-item {
+
+	&__remove {
+		color: $sm-color-danger;
+		font-size: 18px;
+		line-height: 1;
+
+		&:hover {
+			color: color.scale($sm-color-danger, $lightness: -20%);
+		}
+	}
+}

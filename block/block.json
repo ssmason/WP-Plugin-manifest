@@ -2,18 +2,18 @@
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
 	"name": "satori-manifest/price-list",
-	"title": "Price List",
+	"title": "Manifest",
 	"category": "widgets",
 	"icon": "list-view",
 	"description": "Display a structured price list with sections and items. Powered by Satori Manifest.",
 	"keywords": [ "price", "list", "menu", "services", "manifest" ],
 	"textdomain": "satori-manifest",
+	"render": "file:./render.php",
 	"editorScript": "file:./build/index.js",
 	"editorStyle": "file:../src/scss/editor/build/editor.css",
 	"style": "file:../src/scss/frontend/build/frontend.css",
-	"render": "file:./render.php",
 	"attributes": {
-		"sectionIds": {
+		"manifestIds": {
 			"type": "array",
 			"items": { "type": "number" },
 			"default": []
@@ -22,6 +22,11 @@
 			"type": "string",
 			"default": "single-column",
 			"enum": [ "single-column", "two-column", "card-style", "minimal" ]
+		},
+		"colorScheme": {
+			"type": "string",
+			"default": "default",
+			"enum": [ "default", "warm", "terracotta", "dark", "minimal" ]
 		},
 		"showPrices": {
 			"type": "boolean",
@@ -32,6 +37,50 @@
 			"default": true
 		},
 		"pricePrefix": {
+			"type": "string",
+			"default": ""
+		},
+		"customBgColor": {
+			"type": "string",
+			"default": ""
+		},
+		"customAccentColor": {
+			"type": "string",
+			"default": ""
+		},
+		"showBackground": {
+			"type": "boolean",
+			"default": true
+		},
+		"titleBgColor": {
+			"type": "string",
+			"default": ""
+		},
+		"customTitleColor": {
+			"type": "string",
+			"default": ""
+		},
+		"titleFontSize": {
+			"type": "number",
+			"default": 0
+		},
+		"titleFontWeight": {
+			"type": "string",
+			"default": ""
+		},
+		"titleFontFamily": {
+			"type": "string",
+			"default": ""
+		},
+		"itemFontSize": {
+			"type": "number",
+			"default": 0
+		},
+		"itemFontWeight": {
+			"type": "string",
+			"default": ""
+		},
+		"itemFontFamily": {
 			"type": "string",
 			"default": ""
 		}

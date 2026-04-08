@@ -21,14 +21,15 @@
 		"dealerdirect/phpcodesniffer-composer-installer": "^1.0"
 	},
 	"autoload": {
-		"psr-4": {
-			"SatoriManifest\\": "includes/"
-		}
+		"classmap": [
+			"includes/",
+			"admin/"
+		]
 	},
 	"autoload-dev": {
-		"psr-4": {
-			"SatoriManifest\\Tests\\": "tests/"
-		}
+		"classmap": [
+			"tests/"
+		]
 	},
 	"config": {
 		"allow-plugins": {

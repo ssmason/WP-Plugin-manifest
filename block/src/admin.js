@@ -1,333 +1,332 @@
 /**
- * Satori Manifest — Admin options page JavaScript.
+ * Satori Manifest — Meta box JavaScript.
  *
- * Handles the JS-driven Lists tab UI: adding, saving, deleting and
- * reordering sections and their items via AJAX. Uses vanilla JS only.
+ * Handles the sections & items UI on the sm_manifest CPT edit screen.
+ * No AJAX — sections are serialised to a hidden field and saved via the
+ * standard WP post form (Publish / Update button).
  *
- * @package
+ * Architecture notes:
+ * - All button events use delegated listeners on document rather than direct
+ *   bindings. This is intentional: sections and items are added dynamically
+ *   after page load by cloning <template> elements, so elements do not exist
+ *   at DOMContentLoaded time and cannot be bound directly.
+ * - serialise() is debounced on text input (300 ms) to avoid writing JSON on
+ *   every keypress. Structural actions (add/remove/reorder) call it directly
+ *   for immediate consistency.
+ * - Section removal uses a two-step inline confirmation so no blocking
+ *   window.confirm() dialog is required.
+ *
+ * @package SatoriManifest
  * @author  Stephen Mason <steve@satori-digital.com>
  * @since   1.0.0
  */
 
-/* global satoriManifestAdmin */
-
-(function () {
+( function () {
 	'use strict';
 
-	/**
-	 * Shorthand for document.querySelector.
-	 *
-	 * @param {string} selector CSS selector.
-	 * @return {Element|null} Matched element.
-	 */
-	const $ = (selector) => document.querySelector(selector);
+	// ── DOM helpers ────────────────────────────────────────────────────────────
 
 	/**
-	 * Shorthand for document.querySelectorAll.
-	 *
-	 * @param {string}  selector  CSS selector.
-	 * @param {Element} [context] Optional parent element.
-	 * @return {NodeList} Matched elements.
+	 * @param {string}   sel      CSS selector.
+	 * @param {Element=} context  Optional context (defaults to document).
+	 * @return {Element|null}
 	 */
-	const $$ = (selector, context = document) =>
-		context.querySelectorAll(selector);
-
-	const { ajaxUrl, nonces, i18n } = satoriManifestAdmin;
-
-	// ── Utilities ──────────────────────────────────────────────────────────────
+	const $ = ( sel, context = document ) => context.querySelector( sel );
 
 	/**
-	 * Sends an AJAX POST request and resolves with parsed JSON.
-	 *
-	 * @param {string} action wp_ajax_ action name.
-	 * @param {Object} data   Additional POST data.
-	 * @return {Promise<Object>} Parsed response object.
+	 * @param {string}   sel      CSS selector.
+	 * @param {Element=} context  Optional context (defaults to document).
+	 * @return {NodeList}
 	 */
-	async function ajax(action, data) {
-		const body = new FormData();
-		body.append('action', action);
+	const $$ = ( sel, context = document ) => context.querySelectorAll( sel );
 
-		for (const [key, value] of Object.entries(data)) {
-			body.append(key, value);
-		}
-
-		const response = await fetch(ajaxUrl, { method: 'POST', body });
-		return response.json();
-	}
+	// ── Serialise ──────────────────────────────────────────────────────────────
 
 	/**
-	 * Shows a notice message in the admin UI.
+	 * Reads item rows from a section element and returns plain objects.
 	 *
-	 * @param {string}  message   Notice text.
-	 * @param {boolean} isSuccess True for success, false for error.
+	 * @param {Element} sectionEl
+	 * @return {Array<Object>}
 	 */
-	function showNotice(message, isSuccess = true) {
-		const notice = $('#satori-manifest-notice');
-		if (!notice) {
-			return;
-		}
-
-		notice.textContent = message;
-		notice.className =
-			'satori-manifest-lists__notice ' +
-			(isSuccess ? 'is-success' : 'is-error');
-		notice.hidden = false;
-
-		setTimeout(() => {
-			notice.hidden = true;
-		}, 4000);
-	}
-
-	/**
-	 * Collects item data from a section's item rows.
-	 *
-	 * @param {Element} sectionEl The section list item element.
-	 * @return {Array<Object>} Array of item data objects.
-	 */
-	function collectItems(sectionEl) {
-		return Array.from($$('.satori-manifest-item', sectionEl)).map(
-			(row, index) => ({
-				label:
-					row.querySelector('.satori-manifest-item__label')?.value ??
-					'',
-				description:
-					row.querySelector('.satori-manifest-item__description')
-						?.value ?? '',
-				price_prefix:
-					row.querySelector('.satori-manifest-item__prefix')?.value ??
-					'',
-				price:
-					row.querySelector('.satori-manifest-item__price')?.value ??
-					'0.00',
-				sort_order: index,
-			})
+	function collectItems( sectionEl ) {
+		return Array.from( $$( '.satori-manifest-item', sectionEl ) ).map(
+			( row, idx ) => ( {
+				label:        row.querySelector( '.satori-manifest-item__label' )?.value        ?? '',
+				description:  row.querySelector( '.satori-manifest-item__description' )?.value  ?? '',
+				price_prefix: row.querySelector( '.satori-manifest-item__prefix' )?.value       ?? '',
+				price:        row.querySelector( '.satori-manifest-item__price' )?.value        ?? '0.00',
+				sort_order:   idx,
+			} )
 		);
 	}
 
-	// ── Section save ───────────────────────────────────────────────────────────
-
 	/**
-	 * Handles a click on a section's Save button.
+	 * Serialises all sections from the DOM into the hidden JSON field.
+	 * Called on structural mutations and (debounced) on text input.
 	 *
-	 * @param {Element} sectionEl The section list item element.
+	 * @return {void}
 	 */
-	async function handleSectionSave(sectionEl) {
-		const postId = parseInt(sectionEl.dataset.postId ?? '0', 10);
-		const title =
-			sectionEl.querySelector('.satori-manifest-section__title-input')
-				?.value ?? '';
-		const items = collectItems(sectionEl);
-		const order = Array.from($$('.satori-manifest-section')).indexOf(
-			sectionEl
-		);
-
-		const btn = sectionEl.querySelector('.satori-manifest-section__save');
-		if (btn) {
-			btn.textContent = i18n.saving;
-			btn.disabled = true;
-		}
-
-		const result = await ajax('satori_manifest_save_section', {
-			nonce: nonces.saveSection,
-			post_id: postId,
-			title,
-			items: JSON.stringify(items),
-			sort_order: order,
-		});
-
-		if (btn) {
-			btn.textContent = i18n.saved;
-			btn.disabled = false;
-			setTimeout(() => {
-				btn.textContent = 'Save';
-			}, 2000);
-		}
-
-		if (result.success) {
-			sectionEl.dataset.postId = result.data.post_id;
-			showNotice(result.data.message);
-		} else {
-			showNotice(result.data?.message ?? i18n.error, false);
-		}
-	}
-
-	// ── Section delete ─────────────────────────────────────────────────────────
-
-	/**
-	 * Handles a click on a section's Delete button.
-	 *
-	 * @param {Element} sectionEl The section list item element.
-	 */
-	async function handleSectionDelete(sectionEl) {
-		// eslint-disable-next-line no-alert
-		if (!window.confirm(i18n.confirmDelete)) {
+	function serialise() {
+		const field = $( '#satori-manifest-sections-data' );
+		if ( ! field ) {
 			return;
 		}
 
-		const postId = parseInt(sectionEl.dataset.postId ?? '0', 10);
+		const sections = Array.from(
+			$$( '.satori-manifest-section', $( '#satori-manifest-sections-list' ) )
+		).map( ( sectionEl, idx ) => ( {
+			title:      sectionEl.querySelector( '.satori-manifest-section__title-input' )?.value ?? '',
+			sort_order: idx,
+			items:      collectItems( sectionEl ),
+		} ) );
 
-		if (postId > 0) {
-			const result = await ajax('satori_manifest_delete_section', {
-				nonce: nonces.deleteSection,
-				post_id: postId,
-			});
+		field.value = JSON.stringify( sections );
+	}
 
-			if (!result.success) {
-				showNotice(result.data?.message ?? i18n.error, false);
-				return;
-			}
+	// Serialise before WP submits the post form so the hidden field is current.
+	const postForm = $( '#post' );
+	if ( postForm ) {
+		postForm.addEventListener( 'submit', serialise );
+	}
 
-			showNotice(result.data.message);
-		}
+	// Debounced serialise for text input — avoids writing JSON on every keypress.
+	let serialiseTimer = null;
 
-		sectionEl.remove();
+	/**
+	 * Schedules a serialise() call 300 ms after the last input event.
+	 *
+	 * @return {void}
+	 */
+	function serialiseDebounced() {
+		clearTimeout( serialiseTimer );
+		serialiseTimer = setTimeout( serialise, 300 );
 	}
 
 	// ── Add section ────────────────────────────────────────────────────────────
 
 	/**
-	 * Clones the new-section template and prepends it to the list.
+	 * Clones the section template and appends it to the sections list.
+	 *
+	 * @return {void}
 	 */
-	function handleAddSection() {
-		const template = $('#satori-manifest-section-template');
-		const list = $('#satori-manifest-section-list');
+	function addSection() {
+		const template  = $( '#satori-manifest-section-template' );
+		const container = $( '#satori-manifest-sections-list' );
 
-		if (!template || !list) {
+		if ( ! template || ! container ) {
 			return;
 		}
 
-		const clone = template.content.cloneNode(true);
-		list.prepend(clone);
-
-		// Focus the new title input.
-		list.firstElementChild
-			?.querySelector('.satori-manifest-section__title-input')
+		const clone = template.content.cloneNode( true );
+		container.appendChild( clone );
+		container.lastElementChild
+			?.querySelector( '.satori-manifest-section__title-input' )
 			?.focus();
+
+		serialise();
 	}
 
-	// ── Add item row ───────────────────────────────────────────────────────────
+	// ── Remove section ─────────────────────────────────────────────────────────
+
+	/**
+	 * Two-step inline confirmation before removing a section.
+	 *
+	 * First click changes the button text to a confirmation prompt.
+	 * A second click within 3 seconds removes the section. If the user
+	 * does not confirm, the button resets automatically after the timeout.
+	 * This avoids the blocking window.confirm() dialog.
+	 *
+	 * @param {Element} btn  The remove button that was clicked.
+	 * @return {void}
+	 */
+	function handleRemoveSectionClick( btn ) {
+		if ( btn.dataset.confirming ) {
+			// Second click — confirmed, proceed with removal.
+			const sectionEl = btn.closest( '.satori-manifest-section' );
+			if ( sectionEl ) {
+				sectionEl.remove();
+				serialise();
+			}
+			return;
+		}
+
+		// First click — enter confirming state.
+		btn.dataset.confirming = '1';
+		btn.textContent = 'Sure? Click again to remove';
+
+		setTimeout( () => {
+			// Auto-reset if the user does not confirm within 3 seconds.
+			if ( btn.isConnected ) {
+				delete btn.dataset.confirming;
+				btn.innerHTML = '&times; Remove';
+			}
+		}, 3000 );
+	}
+
+	// ── Add item ───────────────────────────────────────────────────────────────
 
 	/**
 	 * Clones the item template and appends it to a section's tbody.
 	 *
-	 * @param {Element} sectionEl The section list item element.
+	 * @param {Element} sectionEl
+	 * @return {void}
 	 */
-	function handleAddItem(sectionEl) {
-		const template = $('#satori-manifest-item-template');
-		const tbody = sectionEl.querySelector('.satori-manifest-items__body');
+	function addItem( sectionEl ) {
+		const template = $( '#satori-manifest-item-template' );
+		const tbody    = sectionEl.querySelector( '.satori-manifest-items__body' );
 
-		if (!template || !tbody) {
+		if ( ! template || ! tbody ) {
 			return;
 		}
 
-		const clone = template.content.cloneNode(true);
-		tbody.appendChild(clone);
-		tbody.lastElementChild?.querySelector('input')?.focus();
+		const clone = template.content.cloneNode( true );
+		tbody.appendChild( clone );
+		tbody.lastElementChild?.querySelector( 'input' )?.focus();
+
+		serialise();
 	}
 
-	// ── Remove item row ────────────────────────────────────────────────────────
+	// ── Remove item ────────────────────────────────────────────────────────────
 
 	/**
-	 * Removes an item row from the table.
+	 * Removes an item row.
 	 *
-	 * @param {Element} rowEl The <tr> element to remove.
+	 * @param {Element} rowEl  The <tr> element.
+	 * @return {void}
 	 */
-	function handleRemoveItem(rowEl) {
+	function removeItem( rowEl ) {
 		rowEl.remove();
+		serialise();
 	}
 
-	// ── Pattern customise / restore ────────────────────────────────────────────
+	// ── Move section up / down ─────────────────────────────────────────────────
 
 	/**
-	 * Sends a pattern customise request.
+	 * Moves a section one position up in the list.
 	 *
-	 * @param {string} handle Pattern handle slug.
-	 * @param {string} title  Pattern title.
+	 * @param {Element} sectionEl
+	 * @return {void}
 	 */
-	async function handleCustomisePattern(handle, title) {
-		const result = await ajax('satori_manifest_save_pattern', {
-			nonce: nonces.savePattern,
-			handle,
-			title,
-			content: '',
-		});
-
-		const notice = $('#satori-manifest-pattern-notice');
-
-		if (result.success) {
-			if (notice) {
-				notice.textContent = result.data.message;
-				notice.className = 'satori-manifest-notice is-success';
-				notice.hidden = false;
-			}
-			// Reload to reflect the change.
-			window.location.reload();
-		} else if (notice) {
-			notice.textContent = result.data?.message ?? i18n.error;
-			notice.className = 'satori-manifest-notice is-error';
-			notice.hidden = false;
+	function moveUp( sectionEl ) {
+		const prev = sectionEl.previousElementSibling;
+		if ( prev ) {
+			sectionEl.parentNode.insertBefore( sectionEl, prev );
+			serialise();
 		}
 	}
 
-	// ── Delegated event binding ────────────────────────────────────────────────
+	/**
+	 * Moves a section one position down in the list.
+	 *
+	 * @param {Element} sectionEl
+	 * @return {void}
+	 */
+	function moveDown( sectionEl ) {
+		const next = sectionEl.nextElementSibling;
+		if ( next ) {
+			sectionEl.parentNode.insertBefore( next, sectionEl );
+			serialise();
+		}
+	}
 
-	document.addEventListener('click', async (event) => {
-		const target = /** @type {Element} */ (event.target);
+	// ── Toggle section body ────────────────────────────────────────────────────
+
+	/**
+	 * Collapses or expands a section's item table.
+	 *
+	 * Toggles aria-expanded on the button and is-collapsed on the body div.
+	 *
+	 * @param {Element} sectionEl
+	 * @return {void}
+	 */
+	function toggleSection( sectionEl ) {
+		const body   = sectionEl.querySelector( '.satori-manifest-section__body' );
+		const toggle = sectionEl.querySelector( '.satori-manifest-section__toggle' );
+		if ( ! body || ! toggle ) {
+			return;
+		}
+		const isExpanded = toggle.getAttribute( 'aria-expanded' ) === 'true';
+		toggle.setAttribute( 'aria-expanded', isExpanded ? 'false' : 'true' );
+		body.classList.toggle( 'is-collapsed', isExpanded );
+	}
+
+	// ── Input change → serialise (debounced) ───────────────────────────────────
+
+	// Keep the hidden field in sync as the user types, debounced to avoid
+	// writing JSON on every keypress for large manifests.
+	const metabox = $( '.satori-manifest-metabox' );
+	if ( metabox ) {
+		metabox.addEventListener( 'input', serialiseDebounced );
+	}
+
+	// ── Delegated click handler ────────────────────────────────────────────────
+
+	// A single delegated listener handles all button clicks. Delegation is used
+	// because sections and items are cloned from <template> elements at runtime
+	// and do not exist when this script first executes.
+	document.addEventListener( 'click', ( e ) => {
+		const target = /** @type {Element} */ ( e.target );
 
 		// Add section.
-		if (target.closest('#satori-manifest-add-section')) {
-			handleAddSection();
+		if ( target.closest( '.satori-manifest-add-section' ) ) {
+			addSection();
 			return;
 		}
 
-		// Save section.
-		const saveBtn = target.closest('.satori-manifest-section__save');
-		if (saveBtn) {
-			const sectionEl = saveBtn.closest('.satori-manifest-section');
-			if (sectionEl) {
-				await handleSectionSave(sectionEl);
-			}
-			return;
-		}
-
-		// Delete section.
-		const deleteBtn = target.closest('.satori-manifest-section__delete');
-		if (deleteBtn) {
-			const sectionEl = deleteBtn.closest('.satori-manifest-section');
-			if (sectionEl) {
-				await handleSectionDelete(sectionEl);
-			}
+		// Remove section (two-step confirmation).
+		const removeSecBtn = target.closest( '.satori-manifest-section__remove' );
+		if ( removeSecBtn ) {
+			handleRemoveSectionClick( removeSecBtn );
 			return;
 		}
 
 		// Add item row.
-		const addItemBtn = target.closest('.satori-manifest-items__add-row');
-		if (addItemBtn) {
-			const sectionEl = addItemBtn.closest('.satori-manifest-section');
-			if (sectionEl) {
-				handleAddItem(sectionEl);
+		const addItemBtn = target.closest( '.satori-manifest-items__add-row' );
+		if ( addItemBtn ) {
+			const sec = addItemBtn.closest( '.satori-manifest-section' );
+			if ( sec ) {
+				addItem( sec );
 			}
 			return;
 		}
 
 		// Remove item row.
-		const removeBtn = target.closest('.satori-manifest-item__remove');
-		if (removeBtn) {
-			const rowEl = removeBtn.closest('.satori-manifest-item');
-			if (rowEl) {
-				handleRemoveItem(rowEl);
+		const removeItemBtn = target.closest( '.satori-manifest-item__remove' );
+		if ( removeItemBtn ) {
+			const row = removeItemBtn.closest( '.satori-manifest-item' );
+			if ( row ) {
+				removeItem( row );
 			}
 			return;
 		}
 
-		// Customise pattern.
-		const customiseBtn = target.closest(
-			'.satori-manifest-pattern__customise'
-		);
-		if (customiseBtn) {
-			const handle = customiseBtn.dataset.handle ?? '';
-			const title = customiseBtn.dataset.title ?? '';
-			await handleCustomisePattern(handle, title);
+		// Move section up.
+		const moveUpBtn = target.closest( '.satori-manifest-section__move-up' );
+		if ( moveUpBtn ) {
+			const sec = moveUpBtn.closest( '.satori-manifest-section' );
+			if ( sec ) {
+				moveUp( sec );
+			}
+			return;
 		}
-	});
-})();
+
+		// Move section down.
+		const moveDownBtn = target.closest( '.satori-manifest-section__move-down' );
+		if ( moveDownBtn ) {
+			const sec = moveDownBtn.closest( '.satori-manifest-section' );
+			if ( sec ) {
+				moveDown( sec );
+			}
+			return;
+		}
+
+		// Toggle section body open/closed.
+		const toggleBtn = target.closest( '.satori-manifest-section__toggle' );
+		if ( toggleBtn ) {
+			const sec = toggleBtn.closest( '.satori-manifest-section' );
+			if ( sec ) {
+				toggleSection( sec );
+			}
+		}
+	} );
+} )();

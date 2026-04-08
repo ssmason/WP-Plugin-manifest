@@ -2,9 +2,9 @@
 /**
  * Custom post type registration.
  *
- * Registers the sm_price_section CPT. Section items are stored as
- * post meta (JSON array) rather than a second CPT, keeping the data model flat
- * and dependency-free.
+ * Registers the sm_manifest CPT and its associated post meta fields.
+ * This class is responsible only for WordPress registration — data access
+ * is handled by Manifest_Repository (class-manifest-repository.php).
  *
  * @package SatoriManifest
  * @author  Stephen Mason <steve@satori-digital.com>
@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class Post_Types
  *
- * Handles registration of the sm_price_section custom post type.
+ * Registers the sm_manifest CPT and its post meta with WordPress.
  *
  * @package SatoriManifest
  * @author  Stephen Mason <steve@satori-digital.com>
@@ -36,18 +36,21 @@ class Post_Types {
 	 * @since 1.0.0
 	 * @var   string
 	 */
-	public const CPT_SECTION = 'sm_price_section';
+	public const CPT_MANIFEST = 'sm_manifest';
 
 	/**
-	 * Meta key for storing section items as JSON.
+	 * Meta key for storing sections (each containing items) as JSON.
+	 *
+	 * Each element shape:
+	 * { "title": string, "sort_order": int, "items": [ { label, description, price, price_prefix, sort_order } ] }
 	 *
 	 * @since 1.0.0
 	 * @var   string
 	 */
-	public const META_ITEMS = '_satori_manifest_items';
+	public const META_SECTIONS = '_satori_manifest_sections';
 
 	/**
-	 * Meta key for section sort order.
+	 * Meta key for manifest sort order (used for admin list ordering).
 	 *
 	 * @since 1.0.0
 	 * @var   string
@@ -55,7 +58,7 @@ class Post_Types {
 	public const META_ORDER = '_satori_manifest_order';
 
 	/**
-	 * Registers the section CPT and its associated post meta.
+	 * Registers the manifest CPT and its associated post meta.
 	 *
 	 * Hooked to 'init'.
 	 *
@@ -64,30 +67,30 @@ class Post_Types {
 	 * @return void
 	 */
 	public static function register(): void {
-		self::register_section_cpt();
+		self::register_manifest_cpt();
 		self::register_meta();
 	}
 
 	/**
-	 * Registers the sm_price_section CPT.
+	 * Registers the sm_manifest CPT.
 	 *
 	 * @author Stephen Mason <steve@satori-digital.com>
 	 * @since  1.0.0
 	 * @return void
 	 */
-	private static function register_section_cpt(): void {
+	private static function register_manifest_cpt(): void {
 		$labels = array(
-			'name'               => __( 'Price List Sections', 'satori-manifest' ),
-			'singular_name'      => __( 'Section', 'satori-manifest' ),
-			'add_new'            => __( 'Add New Section', 'satori-manifest' ),
-			'add_new_item'       => __( 'Add New Section', 'satori-manifest' ),
-			'edit_item'          => __( 'Edit Section', 'satori-manifest' ),
-			'new_item'           => __( 'New Section', 'satori-manifest' ),
-			'view_item'          => __( 'View Section', 'satori-manifest' ),
-			'search_items'       => __( 'Search Sections', 'satori-manifest' ),
-			'not_found'          => __( 'No sections found.', 'satori-manifest' ),
-			'not_found_in_trash' => __( 'No sections found in Trash.', 'satori-manifest' ),
-			'menu_name'          => __( 'Sections', 'satori-manifest' ),
+			'name'               => __( 'Manifests', 'satori-manifest' ),
+			'singular_name'      => __( 'Manifest', 'satori-manifest' ),
+			'add_new'            => __( 'Add New Manifest', 'satori-manifest' ),
+			'add_new_item'       => __( 'Add New Manifest', 'satori-manifest' ),
+			'edit_item'          => __( 'Edit Manifest', 'satori-manifest' ),
+			'new_item'           => __( 'New Manifest', 'satori-manifest' ),
+			'view_item'          => __( 'View Manifest', 'satori-manifest' ),
+			'search_items'       => __( 'Search Manifests', 'satori-manifest' ),
+			'not_found'          => __( 'No manifests found.', 'satori-manifest' ),
+			'not_found_in_trash' => __( 'No manifests found in Trash.', 'satori-manifest' ),
+			'menu_name'          => __( 'Manifests', 'satori-manifest' ),
 		);
 
 		$args = array(
@@ -106,11 +109,14 @@ class Post_Types {
 			'supports'           => array( 'title', 'custom-fields' ),
 		);
 
-		register_post_type( self::CPT_SECTION, $args );
+		register_post_type( self::CPT_MANIFEST, $args );
 	}
 
 	/**
-	 * Registers post meta fields for the section CPT.
+	 * Registers post meta fields for the manifest CPT.
+	 *
+	 * Meta is registered with show_in_rest: true so the block editor can
+	 * read section data for the live editor preview.
 	 *
 	 * @author Stephen Mason <steve@satori-digital.com>
 	 * @since  1.0.0
@@ -118,8 +124,8 @@ class Post_Types {
 	 */
 	private static function register_meta(): void {
 		register_post_meta(
-			self::CPT_SECTION,
-			self::META_ITEMS,
+			self::CPT_MANIFEST,
+			self::META_SECTIONS,
 			array(
 				'single'            => true,
 				'type'              => 'string',
@@ -132,7 +138,7 @@ class Post_Types {
 		);
 
 		register_post_meta(
-			self::CPT_SECTION,
+			self::CPT_MANIFEST,
 			self::META_ORDER,
 			array(
 				'single'            => true,
@@ -144,51 +150,5 @@ class Post_Types {
 				'sanitize_callback' => 'absint',
 			)
 		);
-	}
-
-	/**
-	 * Returns all section posts ordered by sort order then title.
-	 *
-	 * @author Stephen Mason <steve@satori-digital.com>
-	 * @since  1.0.0
-	 * @return \WP_Post[]  Array of WP_Post objects.
-	 */
-	public static function get_all_sections(): array {
-		return get_posts(
-			array(
-				'post_type'      => self::CPT_SECTION,
-				'posts_per_page' => -1,
-				'post_status'    => 'publish',
-				'orderby'        => array(
-					'meta_value_num' => 'ASC',
-					'title'          => 'ASC',
-				),
-				'meta_key'       => self::META_ORDER, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-			)
-		);
-	}
-
-	/**
-	 * Returns the decoded items array for a given section post.
-	 *
-	 * @author Stephen Mason <steve@satori-digital.com>
-	 * @since  1.0.0
-	 * @param  int $post_id  The section post ID.
-	 * @return array<int,array<string,mixed>>  Array of item data arrays.
-	 */
-	public static function get_section_items( int $post_id ): array {
-		$raw = get_post_meta( $post_id, self::META_ITEMS, true );
-
-		if ( empty( $raw ) ) {
-			return array();
-		}
-
-		$decoded = json_decode( $raw, true );
-
-		if ( ! is_array( $decoded ) ) {
-			return array();
-		}
-
-		return $decoded;
 	}
 }

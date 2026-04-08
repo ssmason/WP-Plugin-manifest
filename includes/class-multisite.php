@@ -111,8 +111,9 @@ class Multisite {
 			return;
 		}
 
+		// Flush rewrite rules for the new site so the CPT slugs register correctly.
 		switch_to_blog( $blog_id );
-		Options::seed_defaults();
+		flush_rewrite_rules();
 		restore_current_blog();
 	}
 
@@ -143,10 +144,10 @@ class Multisite {
 	 * @return void
 	 */
 	public static function delete_site_data(): void {
-		// Delete all section CPT posts.
+		// Delete all manifest CPT posts.
 		$posts = get_posts(
 			array(
-				'post_type'      => 'sm_price_section',
+				'post_type'      => Post_Types::CPT_MANIFEST,
 				'posts_per_page' => -1,
 				'post_status'    => 'any',
 				'fields'         => 'ids',
@@ -159,6 +160,5 @@ class Multisite {
 
 		// Delete plugin options.
 		delete_option( 'satori_manifest_version' );
-		delete_option( 'satori_manifest_patterns' );
 	}
 }
