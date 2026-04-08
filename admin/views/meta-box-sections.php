@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<input
 		type="hidden"
 		id="satori-manifest-sections-data"
-		name="<?php echo esc_attr( Meta_Box::POST_FIELD ); ?>"
+		name="<?php echo esc_attr( $satori_manifest_post_field ); ?>"
 		value="<?php echo esc_attr( (string) wp_json_encode( $satori_manifest_sections ) ); ?>"
 	/>
 

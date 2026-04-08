@@ -127,13 +127,26 @@ class Post_Types {
 			self::CPT_MANIFEST,
 			self::META_SECTIONS,
 			array(
-				'single'            => true,
-				'type'              => 'string',
-				'show_in_rest'      => true,
-				'auth_callback'     => function (): bool {
+				'single'        => true,
+				'type'          => 'string',
+				'show_in_rest'  => true,
+				'auth_callback' => static function (): bool {
 					return current_user_can( 'edit_posts' );
 				},
-				'sanitize_callback' => 'sanitize_text_field',
+				// sanitize_text_field must not be used here — it strips backslashes
+				// and angle brackets, which corrupts JSON escape sequences and
+				// encoded characters. Decode, sanitize through Sanitizer (the same
+				// path as the meta-box save), then re-encode as clean JSON.
+				'sanitize_callback' => static function ( $value ): string {
+					if ( ! is_string( $value ) || '' === $value ) {
+						return (string) wp_json_encode( array() );
+					}
+					$decoded = json_decode( $value, true );
+					if ( ! is_array( $decoded ) ) {
+						return (string) wp_json_encode( array() );
+					}
+					return (string) wp_json_encode( Sanitizer::sanitize_sections( $decoded ) );
+				},
 			)
 		);
 
@@ -144,7 +157,7 @@ class Post_Types {
 				'single'            => true,
 				'type'              => 'integer',
 				'show_in_rest'      => true,
-				'auth_callback'     => function (): bool {
+				'auth_callback'     => static function (): bool {
 					return current_user_can( 'edit_posts' );
 				},
 				'sanitize_callback' => 'absint',

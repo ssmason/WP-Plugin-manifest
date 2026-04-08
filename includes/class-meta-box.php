@@ -86,7 +86,8 @@ class Meta_Box {
 	 * @return void
 	 */
 	public static function render( \WP_Post $post ): void {
-		$satori_manifest_sections = Manifest_Repository::get_sections( $post->ID );
+		$satori_manifest_sections   = Manifest_Repository::get_sections( $post->ID );
+		$satori_manifest_post_field = self::POST_FIELD;
 		Security::output_form_nonce( self::NONCE_ACTION );
 		require SATORI_MANIFEST_PATH . 'admin/views/meta-box-sections.php';
 	}
