@@ -50,53 +50,6 @@ class Multisite {
 	}
 
 	/**
-	 * Gets an option — uses get_site_option when network-active.
-	 *
-	 * @author Stephen Mason <steve@satori-digital.com>
-	 * @since  1.0.0
-	 * @param  string $key           Option key.
-	 * @param  mixed  $fallback_val  Default value if option not set.
-	 * @return mixed                 Option value.
-	 */
-	public static function get_option( string $key, mixed $fallback_val = false ): mixed {
-		if ( self::is_network_active() ) {
-			return get_site_option( $key, $fallback_val );
-		}
-		return get_option( $key, $fallback_val );
-	}
-
-	/**
-	 * Updates an option — uses update_site_option when network-active.
-	 *
-	 * @author Stephen Mason <steve@satori-digital.com>
-	 * @since  1.0.0
-	 * @param  string $key    Option key.
-	 * @param  mixed  $value  Value to store.
-	 * @return bool           True on success, false on failure.
-	 */
-	public static function update_option( string $key, mixed $value ): bool {
-		if ( self::is_network_active() ) {
-			return update_site_option( $key, $value );
-		}
-		return update_option( $key, $value );
-	}
-
-	/**
-	 * Deletes an option — uses delete_site_option when network-active.
-	 *
-	 * @author Stephen Mason <steve@satori-digital.com>
-	 * @since  1.0.0
-	 * @param  string $key  Option key.
-	 * @return bool         True on success, false on failure.
-	 */
-	public static function delete_option( string $key ): bool {
-		if ( self::is_network_active() ) {
-			return delete_site_option( $key );
-		}
-		return delete_option( $key );
-	}
-
-	/**
 	 * Runs default setup for a newly created site on a multisite network.
 	 *
 	 * Hooked to wpmu_new_blog.
@@ -160,5 +113,6 @@ class Multisite {
 
 		// Delete plugin options.
 		delete_option( 'satori_manifest_version' );
+		delete_option( 'satori_manifest_patterns_seeded' );
 	}
 }

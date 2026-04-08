@@ -26,6 +26,7 @@ require_once __DIR__ . '/includes/class-multisite.php';
 if ( is_multisite() ) {
 	SatoriManifest\Multisite::network_uninstall();
 } else {
+	// delete_site_data() removes CPT posts, meta, and all plugin options
+	// including satori_manifest_version and satori_manifest_patterns_seeded.
 	SatoriManifest\Multisite::delete_site_data();
-	delete_option( 'satori_manifest_version' );
 }

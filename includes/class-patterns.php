@@ -138,10 +138,10 @@ class Patterns {
 	 * Seeds the four patterns as editable wp_block posts (user patterns).
 	 *
 	 * Creates one wp_block post per definition if a post with the same title
-	 * does not already exist, making this safe to call on every activation.
+	 * does not already exist, making this safe to call on every request.
 	 * Each post is marked as unsynced so edits affect only that copy.
 	 *
-	 * Called from Plugin::activate() and maybe_seed_user_patterns().
+	 * Called from maybe_seed_user_patterns() on init and from Plugin::activate().
 	 *
 	 * @author Stephen Mason <steve@satori-digital.com>
 	 * @since  1.0.0

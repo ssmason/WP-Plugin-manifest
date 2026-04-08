@@ -2,8 +2,10 @@
 /**
  * Asset enqueue management.
  *
- * Enqueues compiled scripts and styles for the admin, block editor, and
- * public-facing frontend. All handles are prefixed with satori-manifest-.
+ * Enqueues compiled scripts and styles for the admin meta box only.
+ * Block editor styles and frontend styles are registered automatically by
+ * WordPress via the editorStyle and style keys in block/block.json —
+ * no manual enqueue is needed for those contexts.
  *
  * @package SatoriManifest
  * @author  Stephen Mason <steve@satori-digital.com>
@@ -21,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class Assets
  *
- * Manages script and style enqueueing for all plugin contexts.
+ * Manages script and style enqueueing for the manifest CPT admin screens.
  *
  * @package SatoriManifest
  * @author  Stephen Mason <steve@satori-digital.com>
@@ -30,9 +32,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Assets {
 
 	/**
-	 * Enqueues scripts and styles for admin pages.
+	 * Enqueues scripts and styles for the manifest CPT add/edit screen.
 	 *
-	 * Only loads on plugin admin pages to avoid polluting other screens.
+	 * Only loads on the manifest CPT edit screens to avoid polluting other
+	 * admin pages. Hooked to 'admin_enqueue_scripts'.
 	 *
 	 * @author Stephen Mason <steve@satori-digital.com>
 	 * @since  1.0.0
@@ -66,45 +69,10 @@ class Assets {
 	}
 
 	/**
-	 * Enqueues scripts and styles for the block editor.
-	 *
-	 * @author Stephen Mason <steve@satori-digital.com>
-	 * @since  1.0.0
-	 * @return void
-	 */
-	public static function enqueue_editor(): void {
-		wp_enqueue_style(
-			'satori-manifest-editor',
-			SATORI_MANIFEST_URL . 'src/scss/editor/build/editor.css',
-			array( 'wp-edit-blocks' ),
-			SATORI_MANIFEST_VERSION
-		);
-	}
-
-	/**
-	 * Enqueues styles for the public frontend.
-	 *
-	 * Only loads when the price-list block is present on the current page.
-	 *
-	 * @author Stephen Mason <steve@satori-digital.com>
-	 * @since  1.0.0
-	 * @return void
-	 */
-	public static function enqueue_frontend(): void {
-		if ( ! self::page_has_price_list_block() ) {
-			return;
-		}
-
-		wp_enqueue_style(
-			'satori-manifest-frontend',
-			SATORI_MANIFEST_URL . 'src/scss/frontend/build/frontend.css',
-			array(),
-			SATORI_MANIFEST_VERSION
-		);
-	}
-
-	/**
 	 * Returns true only on the manifest CPT add/edit screens.
+	 *
+	 * Uses get_current_screen() rather than the $post_type global, which is
+	 * unreliable early in the admin_enqueue_scripts lifecycle.
 	 *
 	 * @author Stephen Mason <steve@satori-digital.com>
 	 * @since  1.0.0
@@ -116,24 +84,7 @@ class Assets {
 			return false;
 		}
 
-		global $post_type;
-		return Post_Types::CPT_MANIFEST === $post_type;
-	}
-
-	/**
-	 * Checks whether the queried post/page contains the price-list block.
-	 *
-	 * @author Stephen Mason <steve@satori-digital.com>
-	 * @since  1.0.0
-	 * @return bool
-	 */
-	private static function page_has_price_list_block(): bool {
-		global $post;
-
-		if ( ! $post instanceof \WP_Post ) {
-			return false;
-		}
-
-		return has_block( 'satori-manifest/price-list', $post );
+		$screen = get_current_screen();
+		return $screen instanceof \WP_Screen && Post_Types::CPT_MANIFEST === $screen->post_type;
 	}
 }

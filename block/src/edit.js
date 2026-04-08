@@ -22,9 +22,10 @@ import { parseSections, formatPrice } from './utils';
 /**
  * Demo sections shown when no manifests are selected.
  *
- * Used in the Patterns preview and when the block is first dropped onto a
- * page, so the user sees the visual style immediately rather than a plain
- * placeholder. Items use generic service names and prices.
+ * Rendered in the editor when the block is first dropped onto a page so the
+ * user sees the visual style immediately rather than a blank placeholder.
+ * The block Patterns preview is server-side (render.php) — this data is only
+ * used in the React edit component. Items use generic service names and prices.
  *
  * @type {Array<Object>}
  */

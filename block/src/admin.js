@@ -158,7 +158,7 @@
 			// Auto-reset if the user does not confirm within 3 seconds.
 			if ( btn.isConnected ) {
 				delete btn.dataset.confirming;
-				btn.innerHTML = '&times; Remove';
+				btn.textContent = '\u00d7 Remove';
 			}
 		}, 3000 );
 	}

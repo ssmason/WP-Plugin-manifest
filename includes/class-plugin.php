@@ -77,8 +77,6 @@ class Plugin {
 		add_action( 'add_meta_boxes', array( Meta_Box::class, 'register' ) );
 		add_action( 'save_post_' . Post_Types::CPT_MANIFEST, array( Meta_Box::class, 'save' ) );
 		add_action( 'admin_enqueue_scripts', array( Assets::class, 'enqueue_admin' ) );
-		add_action( 'enqueue_block_editor_assets', array( Assets::class, 'enqueue_editor' ) );
-		add_action( 'wp_enqueue_scripts', array( Assets::class, 'enqueue_frontend' ) );
 		add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );
 
 		if ( is_multisite() ) {

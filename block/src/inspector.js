@@ -20,6 +20,7 @@ import {
 	Spinner,
 	Button,
 } from '@wordpress/components';
+import { useCallback } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { useSelect } from '@wordpress/data';
 
@@ -76,32 +77,35 @@ const LAYOUT_OPTIONS = [
  *
  * @type {Array<{label: string, value: string}>}
  */
+/**
+ * Font family options grouped by category.
+ *
+ * Theme fonts (Cormorant Garamond, DM Sans) are already loaded by the theme
+ * and do not require an additional network request. All other values use
+ * web-safe stacks that do not require external font loading.
+ *
+ * Defined outside the component so the reference is stable across renders.
+ *
+ * @type {Array<{label: string, value: string}>}
+ */
 const FONT_FAMILY_OPTIONS = [
-	{ label: __( 'Default', 'satori-manifest' ), value: '' },
-
-	// ── Theme fonts (already loaded) ──────────────────────────────────────────
+	{ label: __( 'Default',                   'satori-manifest' ), value: '' },
 	{ label: __( 'Cormorant Garamond (theme)', 'satori-manifest' ), value: "'Cormorant Garamond', Georgia, serif" },
 	{ label: __( 'DM Sans (theme)',            'satori-manifest' ), value: "'DM Sans', sans-serif" },
-
-	// ── Serif ─────────────────────────────────────────────────────────────────
-	{ label: __( 'Georgia',        'satori-manifest' ), value: "Georgia, 'Times New Roman', serif" },
-	{ label: __( 'Times New Roman','satori-manifest' ), value: "'Times New Roman', Times, serif" },
-	{ label: __( 'Palatino',       'satori-manifest' ), value: "'Palatino Linotype', Palatino, 'Book Antiqua', serif" },
-	{ label: __( 'Garamond',       'satori-manifest' ), value: "Garamond, 'Times New Roman', serif" },
-	{ label: __( 'Book Antiqua',   'satori-manifest' ), value: "'Book Antiqua', Palatino, serif" },
-
-	// ── Sans-serif ────────────────────────────────────────────────────────────
-	{ label: __( 'System UI',       'satori-manifest' ), value: "system-ui, -apple-system, BlinkMacSystemFont, sans-serif" },
-	{ label: __( 'Arial / Helvetica','satori-manifest' ), value: "Arial, Helvetica, sans-serif" },
-	{ label: __( 'Verdana',         'satori-manifest' ), value: "Verdana, Geneva, sans-serif" },
-	{ label: __( 'Trebuchet MS',    'satori-manifest' ), value: "'Trebuchet MS', Helvetica, sans-serif" },
-	{ label: __( 'Tahoma',          'satori-manifest' ), value: "Tahoma, Geneva, sans-serif" },
-	{ label: __( 'Gill Sans',       'satori-manifest' ), value: "'Gill Sans', 'Gill Sans MT', Calibri, sans-serif" },
-	{ label: __( 'Optima',          'satori-manifest' ), value: "Optima, Segoe, 'Segoe UI', Candara, sans-serif" },
-
-	// ── Monospace ─────────────────────────────────────────────────────────────
-	{ label: __( 'Monospace',   'satori-manifest' ), value: "ui-monospace, 'Courier New', Courier, monospace" },
-	{ label: __( 'Courier New', 'satori-manifest' ), value: "'Courier New', Courier, monospace" },
+	{ label: __( 'Georgia',                   'satori-manifest' ), value: "Georgia, 'Times New Roman', serif" },
+	{ label: __( 'Times New Roman',           'satori-manifest' ), value: "'Times New Roman', Times, serif" },
+	{ label: __( 'Palatino',                  'satori-manifest' ), value: "'Palatino Linotype', Palatino, 'Book Antiqua', serif" },
+	{ label: __( 'Garamond',                  'satori-manifest' ), value: "Garamond, 'Times New Roman', serif" },
+	{ label: __( 'Book Antiqua',              'satori-manifest' ), value: "'Book Antiqua', Palatino, serif" },
+	{ label: __( 'System UI',                 'satori-manifest' ), value: "system-ui, -apple-system, BlinkMacSystemFont, sans-serif" },
+	{ label: __( 'Arial / Helvetica',         'satori-manifest' ), value: "Arial, Helvetica, sans-serif" },
+	{ label: __( 'Verdana',                   'satori-manifest' ), value: "Verdana, Geneva, sans-serif" },
+	{ label: __( 'Trebuchet MS',              'satori-manifest' ), value: "'Trebuchet MS', Helvetica, sans-serif" },
+	{ label: __( 'Tahoma',                    'satori-manifest' ), value: "Tahoma, Geneva, sans-serif" },
+	{ label: __( 'Gill Sans',                 'satori-manifest' ), value: "'Gill Sans', 'Gill Sans MT', Calibri, sans-serif" },
+	{ label: __( 'Optima',                    'satori-manifest' ), value: "Optima, Segoe, 'Segoe UI', Candara, sans-serif" },
+	{ label: __( 'Monospace',                 'satori-manifest' ), value: "ui-monospace, 'Courier New', Courier, monospace" },
+	{ label: __( 'Courier New',               'satori-manifest' ), value: "'Courier New', Courier, monospace" },
 ];
 
 const FONT_WEIGHT_OPTIONS = [
@@ -174,12 +178,15 @@ export default function Inspector( { attributes, setAttributes } ) {
 	 * @param {boolean} checked Whether the checkbox is now checked.
 	 * @return {void}
 	 */
-	function toggleManifest( id, checked ) {
-		const next = checked
-			? [ ...manifestIds, id ]
-			: manifestIds.filter( ( m ) => m !== id );
-		setAttributes( { manifestIds: next } );
-	}
+	const toggleManifest = useCallback(
+		( id, checked ) => {
+			const next = checked
+				? [ ...manifestIds, id ]
+				: manifestIds.filter( ( m ) => m !== id );
+			setAttributes( { manifestIds: next } );
+		},
+		[ manifestIds, setAttributes ]
+	);
 
 	return (
 		<InspectorControls>
@@ -396,7 +403,7 @@ export default function Inspector( { attributes, setAttributes } ) {
 						{ titleBgColor && (
 							<Button
 								variant="tertiary"
-								isSmall
+								size="small"
 								onClick={ () =>
 									setAttributes( { titleBgColor: '' } )
 								}

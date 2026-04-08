@@ -3,14 +3,13 @@
  * Block render template — satori-manifest/price-list.
  *
  * Called by WordPress when rendering the block on the frontend. WordPress
- * makes three variables available in this file's scope:
+ * makes two variables available in this file's scope:
  *
  *   $attributes (array)    — Block attribute values from the editor.
  *   $content    (string)   — Inner block content (unused — dynamic block).
- *   $block      (WP_Block) — The block instance object.
  *
- * All output is escaped at the point of echo. No direct user input reaches
- * this file — attributes are validated and sanitized on save by the editor.
+ * All output is escaped at the point of echo. Attributes arrive pre-validated
+ * by the block editor; section data is sanitized on save by Sanitizer.
  *
  * @package SatoriManifest
  * @author  Stephen Mason <steve@satori-digital.com>
@@ -29,20 +28,21 @@ $manifest_ids = isset( $attributes['manifestIds'] ) && is_array( $attributes['ma
 	? array_map( 'absint', $attributes['manifestIds'] )
 	: array();
 
-$layout                = isset( $attributes['layout'] ) ? sanitize_key( $attributes['layout'] ) : 'single-column';
-$color_scheme          = isset( $attributes['colorScheme'] ) ? sanitize_key( $attributes['colorScheme'] ) : 'default';
-$show_prices           = isset( $attributes['showPrices'] ) ? (bool) $attributes['showPrices'] : true;
-$show_descs            = isset( $attributes['showDescriptions'] ) ? (bool) $attributes['showDescriptions'] : true;
-$price_prefix_override = isset( $attributes['pricePrefix'] ) ? sanitize_text_field( (string) $attributes['pricePrefix'] ) : '';
+$layout                = isset( $attributes['layout'] )        ? sanitize_key( $attributes['layout'] )                           : 'single-column';
+$color_scheme          = isset( $attributes['colorScheme'] )   ? sanitize_key( $attributes['colorScheme'] )                      : 'default';
+$show_prices           = isset( $attributes['showPrices'] )    ? (bool) $attributes['showPrices']                                 : true;
+$show_descs            = isset( $attributes['showDescriptions'] ) ? (bool) $attributes['showDescriptions']                       : true;
+$price_prefix_override = isset( $attributes['pricePrefix'] )   ? sanitize_text_field( (string) $attributes['pricePrefix'] )      : '';
+$show_background       = isset( $attributes['showBackground'] ) ? (bool) $attributes['showBackground']                           : true;
+$title_bg_color        = isset( $attributes['titleBgColor'] )  ? sanitize_hex_color( (string) $attributes['titleBgColor'] )      : '';
+$title_font_size       = isset( $attributes['titleFontSize'] ) ? absint( $attributes['titleFontSize'] )                          : 0;
+$title_font_weight     = isset( $attributes['titleFontWeight'] ) ? sanitize_text_field( (string) $attributes['titleFontWeight'] ) : '';
+$title_font_family     = isset( $attributes['titleFontFamily'] ) ? sanitize_text_field( (string) $attributes['titleFontFamily'] ) : '';
+$item_font_size        = isset( $attributes['itemFontSize'] )  ? absint( $attributes['itemFontSize'] )                           : 0;
+$item_font_weight      = isset( $attributes['itemFontWeight'] ) ? sanitize_text_field( (string) $attributes['itemFontWeight'] )  : '';
+$item_font_family      = isset( $attributes['itemFontFamily'] ) ? sanitize_text_field( (string) $attributes['itemFontFamily'] )  : '';
 
-$show_background  = isset( $attributes['showBackground'] )  ? (bool) $attributes['showBackground'] : true;
-$title_bg_color   = isset( $attributes['titleBgColor'] )   ? sanitize_hex_color( (string) $attributes['titleBgColor'] ) : '';
-$title_font_size   = isset( $attributes['titleFontSize'] )   ? absint( $attributes['titleFontSize'] ) : 0;
-$title_font_weight = isset( $attributes['titleFontWeight'] ) ? sanitize_text_field( (string) $attributes['titleFontWeight'] ) : '';
-$title_font_family = isset( $attributes['titleFontFamily'] ) ? sanitize_text_field( (string) $attributes['titleFontFamily'] ) : '';
-$item_font_size    = isset( $attributes['itemFontSize'] )    ? absint( $attributes['itemFontSize'] ) : 0;
-$item_font_weight  = isset( $attributes['itemFontWeight'] )  ? sanitize_text_field( (string) $attributes['itemFontWeight'] ) : '';
-$item_font_family  = isset( $attributes['itemFontFamily'] )  ? sanitize_text_field( (string) $attributes['itemFontFamily'] ) : '';
+// ── Build wrapper class list ──────────────────────────────────────────────────
 
 $wrapper_classes = implode(
 	' ',
@@ -57,47 +57,54 @@ $wrapper_classes = implode(
 	)
 );
 
-// Build optional inline style for custom colour scheme and title background.
-$wrapper_style = '';
-$custom_props  = '';
+// ── Build inline CSS custom properties ───────────────────────────────────────
+//
+// CSS variables are set on the wrapper element and cascade to all descendants.
+// Values are sanitized above; esc_attr() is applied at the point of output.
+// HTML-encoded quotes (e.g. &#039;) in font-family stacks are decoded by the
+// browser's HTML parser before CSS processes them, so this is correct.
+
+$inline_style = '';
+
 if ( 'custom' === $color_scheme ) {
 	$custom_bg     = isset( $attributes['customBgColor'] )     ? sanitize_hex_color( (string) $attributes['customBgColor'] )     : '';
 	$custom_accent = isset( $attributes['customAccentColor'] ) ? sanitize_hex_color( (string) $attributes['customAccentColor'] ) : '';
 	$custom_title  = isset( $attributes['customTitleColor'] )  ? sanitize_hex_color( (string) $attributes['customTitleColor'] )  : '';
+
 	if ( $custom_bg ) {
-		$custom_props .= '--sm-custom-bg:' . $custom_bg . ';';
+		$inline_style .= '--sm-custom-bg:' . $custom_bg . ';';
 	}
 	if ( $custom_accent ) {
-		$custom_props .= '--sm-custom-accent:' . $custom_accent . ';';
+		$inline_style .= '--sm-custom-accent:' . $custom_accent . ';';
 	}
 	if ( $custom_title ) {
-		$custom_props .= '--sm-custom-title:' . $custom_title . ';';
+		$inline_style .= '--sm-custom-title:' . $custom_title . ';';
 	}
 }
+
 if ( $title_bg_color ) {
-	$custom_props .= '--sm-title-bg:' . $title_bg_color . ';';
+	$inline_style .= '--sm-title-bg:' . $title_bg_color . ';';
 }
 if ( '' !== $title_font_family ) {
-	$custom_props .= '--sm-title-font:' . $title_font_family . ';';
+	$inline_style .= '--sm-title-font:' . $title_font_family . ';';
 }
 if ( $title_font_size > 0 ) {
-	$custom_props .= '--sm-title-size:' . $title_font_size . 'px;';
+	$inline_style .= '--sm-title-size:' . $title_font_size . 'px;';
 }
 if ( '' !== $title_font_weight ) {
-	$custom_props .= '--sm-title-weight:' . $title_font_weight . ';';
+	$inline_style .= '--sm-title-weight:' . $title_font_weight . ';';
 }
 if ( '' !== $item_font_family ) {
-	$custom_props .= '--sm-item-font:' . $item_font_family . ';';
+	$inline_style .= '--sm-item-font:' . $item_font_family . ';';
 }
 if ( $item_font_size > 0 ) {
-	$custom_props .= '--sm-item-size:' . $item_font_size . 'px;';
+	$inline_style .= '--sm-item-size:' . $item_font_size . 'px;';
 }
 if ( '' !== $item_font_weight ) {
-	$custom_props .= '--sm-item-weight:' . $item_font_weight . ';';
+	$inline_style .= '--sm-item-weight:' . $item_font_weight . ';';
 }
-if ( $custom_props ) {
-	$wrapper_style = $custom_props;
-}
+
+// ── Empty state — demo skeleton ───────────────────────────────────────────────
 
 if ( empty( $manifest_ids ) ) {
 	// In admin or REST contexts (e.g. the Patterns editor preview) render a
@@ -112,23 +119,48 @@ if ( empty( $manifest_ids ) ) {
 		array(
 			'title' => __( 'Section Title', 'satori-manifest' ),
 			'items' => array(
-				array( 'label' => __( 'Service Name', 'satori-manifest' ), 'description' => __( 'Optional description', 'satori-manifest' ), 'price' => '45.00', 'price_prefix' => 'from' ),
-				array( 'label' => __( 'Service Name', 'satori-manifest' ), 'description' => '',                                                 'price' => '60.00', 'price_prefix' => '' ),
-				array( 'label' => __( 'Service Name', 'satori-manifest' ), 'description' => __( 'Optional description', 'satori-manifest' ), 'price' => '25.00', 'price_prefix' => 'from' ),
+				array(
+					'label'        => __( 'Service Name', 'satori-manifest' ),
+					'description'  => __( 'Optional description', 'satori-manifest' ),
+					'price'        => '45.00',
+					'price_prefix' => 'from',
+				),
+				array(
+					'label'        => __( 'Service Name', 'satori-manifest' ),
+					'description'  => '',
+					'price'        => '60.00',
+					'price_prefix' => '',
+				),
+				array(
+					'label'        => __( 'Service Name', 'satori-manifest' ),
+					'description'  => __( 'Optional description', 'satori-manifest' ),
+					'price'        => '25.00',
+					'price_prefix' => 'from',
+				),
 			),
 		),
 		array(
 			'title' => __( 'Another Section', 'satori-manifest' ),
 			'items' => array(
-				array( 'label' => __( 'Service Name', 'satori-manifest' ), 'description' => '',                                                 'price' => '35.00', 'price_prefix' => '' ),
-				array( 'label' => __( 'Service Name', 'satori-manifest' ), 'description' => __( 'Optional description', 'satori-manifest' ), 'price' => '50.00', 'price_prefix' => 'from' ),
+				array(
+					'label'        => __( 'Service Name', 'satori-manifest' ),
+					'description'  => '',
+					'price'        => '35.00',
+					'price_prefix' => '',
+				),
+				array(
+					'label'        => __( 'Service Name', 'satori-manifest' ),
+					'description'  => __( 'Optional description', 'satori-manifest' ),
+					'price'        => '50.00',
+					'price_prefix' => 'from',
+				),
 			),
 		),
 	);
 
 	ob_start();
 	?>
-	<div class="<?php echo esc_attr( $wrapper_classes ); ?>"<?php if ( $wrapper_style ) : ?> style="<?php echo esc_attr( $wrapper_style ); ?>"<?php endif; ?>>
+	<div class="<?php echo esc_attr( $wrapper_classes ); ?>"<?php if ( $inline_style ) : ?> style="<?php echo esc_attr( $inline_style ); ?>"<?php endif; ?>>
 		<div class="satori-manifest-price-list__manifest">
 			<?php foreach ( $demo_sections as $demo_section ) : ?>
 				<div class="satori-manifest-price-list__section">
@@ -169,8 +201,10 @@ if ( empty( $manifest_ids ) ) {
 	return (string) ob_get_clean();
 }
 
+// ── Live render ───────────────────────────────────────────────────────────────
+
 ?>
-<div class="<?php echo esc_attr( $wrapper_classes ); ?>"<?php if ( $wrapper_style ) : ?> style="<?php echo esc_attr( $wrapper_style ); ?>"<?php endif; ?>>
+<div class="<?php echo esc_attr( $wrapper_classes ); ?>"<?php if ( $inline_style ) : ?> style="<?php echo esc_attr( $inline_style ); ?>"<?php endif; ?>>
 	<?php foreach ( $manifest_ids as $post_id ) : ?>
 		<?php
 		$manifest = get_post( $post_id );
@@ -183,12 +217,14 @@ if ( empty( $manifest_ids ) ) {
 			continue;
 		}
 
+		// Section data is sanitized by Sanitizer::sanitize_sections() on save;
+		// no further sanitization is needed here before output.
 		$sections = \SatoriManifest\Manifest_Repository::get_sections( $post_id );
 		?>
 		<div class="satori-manifest-price-list__manifest">
 			<?php foreach ( $sections as $section ) : ?>
 				<?php
-				$section_title = isset( $section['title'] ) ? sanitize_text_field( $section['title'] ) : '';
+				$section_title = isset( $section['title'] ) ? (string) $section['title'] : '';
 				$items         = isset( $section['items'] ) && is_array( $section['items'] ) ? $section['items'] : array();
 
 				if ( empty( $section_title ) && empty( $items ) ) {
@@ -206,12 +242,12 @@ if ( empty( $manifest_ids ) ) {
 						<ul class="satori-manifest-price-list__items">
 							<?php foreach ( $items as $item ) : ?>
 								<?php
-								$label       = isset( $item['label'] ) ? sanitize_text_field( $item['label'] ) : '';
-								$description = isset( $item['description'] ) ? sanitize_text_field( $item['description'] ) : '';
-								$price       = isset( $item['price'] ) ? (float) $item['price'] : 0.0;
+								$label       = isset( $item['label'] )        ? (string) $item['label']        : '';
+								$description = isset( $item['description'] )  ? (string) $item['description']  : '';
+								$price       = isset( $item['price'] )        ? (float) $item['price']          : 0.0;
 								$prefix      = '' !== $price_prefix_override
 									? $price_prefix_override
-									: ( isset( $item['price_prefix'] ) ? sanitize_text_field( $item['price_prefix'] ) : '' );
+									: ( isset( $item['price_prefix'] ) ? (string) $item['price_prefix'] : '' );
 
 								if ( empty( $label ) ) {
 									continue;
@@ -236,10 +272,7 @@ if ( empty( $manifest_ids ) ) {
 													<?php echo esc_html( $prefix ); ?>
 												</span>
 											<?php endif; ?>
-											<?php
-											// translators: %s is a formatted price number.
-											echo esc_html( number_format_i18n( $price, 2 ) );
-											?>
+											<?php echo esc_html( number_format_i18n( $price, 2 ) ); ?>
 										</span>
 									<?php endif; ?>
 								</li>
