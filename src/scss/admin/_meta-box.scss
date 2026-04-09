@@ -83,7 +83,7 @@
 		display: flex;
 		align-items: center;
 		gap: $sm-space-sm;
-		padding: $sm-space-sm ($sm-space-md + 5px) $sm-space-sm $sm-space-md;
+		padding: $sm-space-sm $sm-space-md;
 		background: $sm-color-bg;
 		border-bottom: 1px solid $sm-color-border;
 	}
@@ -136,6 +136,7 @@
 		flex-direction: column;
 		gap: 0;
 		flex-shrink: 0;
+		margin-left: auto;
 
 		button {
 			display: flex;
