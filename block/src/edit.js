@@ -186,7 +186,7 @@ export default function Edit( { attributes, setAttributes } ) {
 									{ section.items.map( ( item, ii ) => (
 										<li
 											key={ ii }
-											className="satori-manifest-price-list__item"
+											className={ `satori-manifest-price-list__item${ parseFloat( item.price ) === 0 ? ' is-subsection-header' : '' }` }
 										>
 											<div className="satori-manifest-price-list__item-label">
 												<span className="satori-manifest-price-list__item-name">
@@ -288,7 +288,7 @@ export default function Edit( { attributes, setAttributes } ) {
 													return (
 														<li
 															key={ `${ item.label }-${ ii }` }
-															className="satori-manifest-price-list__item"
+															className={ `satori-manifest-price-list__item${ parseFloat( item.price ) === 0 ? ' is-subsection-header' : '' }` }
 														>
 															<div className="satori-manifest-price-list__item-label">
 																<span className="satori-manifest-price-list__item-name">

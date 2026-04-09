@@ -263,7 +263,7 @@ if ( empty( $manifest_ids ) ) {
 									continue;
 								}
 								?>
-								<li class="satori-manifest-price-list__item">
+								<li class="satori-manifest-price-list__item<?php echo 0.0 === $price ? ' is-subsection-header' : ''; ?>">
 									<div class="satori-manifest-price-list__item-label">
 										<span class="satori-manifest-price-list__item-name">
 											<?php echo esc_html( $label ); ?>

@@ -340,6 +340,17 @@ $sm-fe-radius:   6px;
 	padding: 0 !important; // stylelint-disable-line declaration-no-important
 }
 
+// ─── Subsection header items (price = 0.00) ──────────────────────────────────
+// Items with no price are treated as visual subsection headers. A heavier
+// font weight distinguishes them from regular priced items.
+
+.satori-manifest-price-list__item.is-subsection-header {
+
+	.satori-manifest-price-list__item-name {
+		font-weight: 700;
+	}
+}
+
 // ─── Modifier: no card padding ───────────────────────────────────────────────
 // Applied when cardPadding is false. Removes padding from section containers
 // regardless of colour scheme.
