@@ -18,25 +18,21 @@
 	border: 1px solid $sm-color-border;
 	border-radius: $sm-radius;
 	background: $sm-color-bg;
+	padding: $sm-space-sm;
 
-	summary {
-		padding: $sm-space-xs $sm-space-sm;
+	&__heading {
+		margin: 0 0 $sm-space-xs;
 		font-size: $sm-font-sm;
 		font-weight: 600;
 		color: $sm-color-text-light;
-		cursor: pointer;
-		user-select: none;
-
-		&:hover {
-			color: $sm-color-primary;
-		}
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
 	}
 
 	&__list {
 		margin: 0;
-		padding: $sm-space-xs $sm-space-sm $sm-space-sm;
+		padding: 0;
 		list-style: none;
-		border-top: 1px solid $sm-color-border;
 
 		li {
 			display: flex;
@@ -44,7 +40,7 @@
 			gap: 6px;
 			font-size: $sm-font-sm;
 			color: $sm-color-text-light;
-			padding: 3px 0;
+			padding: 2px 0;
 		}
 
 		.dashicons {

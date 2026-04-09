@@ -22,8 +22,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 		value="<?php echo esc_attr( (string) wp_json_encode( $satori_manifest_sections ) ); ?>"
 	/>
 
-	<details class="satori-manifest-legend">
-		<summary><?php esc_html_e( 'Controls', 'satori-manifest' ); ?></summary>
+	<div class="satori-manifest-legend">
+		<p class="satori-manifest-legend__heading"><?php esc_html_e( 'Controls', 'satori-manifest' ); ?></p>
 		<ul class="satori-manifest-legend__list">
 			<li>
 				<span class="dashicons dashicons-arrow-up-alt2"></span>
@@ -31,23 +31,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<?php esc_html_e( 'Reorder sections or items', 'satori-manifest' ); ?>
 			</li>
 			<li>
-				<span class="dashicons dashicons-arrow-down-alt2 satori-manifest-legend__chevron"></span>
+				<span class="dashicons dashicons-arrow-down-alt2"></span>
 				<?php esc_html_e( 'Collapse / expand a section', 'satori-manifest' ); ?>
 			</li>
 			<li>
-				<svg width="13" height="13" viewBox="0 0 1024 1024" fill="#f70202" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M512 897.6c-108 0-209.6-42.4-285.6-118.4-76-76-118.4-177.6-118.4-285.6 0-108 42.4-209.6 118.4-285.6 76-76 177.6-118.4 285.6-118.4 108 0 209.6 42.4 285.6 118.4 157.6 157.6 157.6 413.6 0 571.2-76 76-177.6 118.4-285.6 118.4z m0-760c-95.2 0-184.8 36.8-252 104-67.2 67.2-104 156.8-104 252s36.8 184.8 104 252c67.2 67.2 156.8 104 252 104 95.2 0 184.8-36.8 252-104 139.2-139.2 139.2-364.8 0-504-67.2-67.2-156.8-104-252-104z"/><path d="M707.872 329.392L348.096 689.16l-31.68-31.68 359.776-359.768z"/><path d="M328 340.8l32-31.2 348 348-32 32z"/></svg>
-				<?php esc_html_e( 'Remove item — no confirmation', 'satori-manifest' ); ?>
+				<svg width="13" height="13" viewBox="0 0 1024 1024" fill="#f70202" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M512 897.6c-108 0-209.6-42.4-285.6-118.4-76-76-118.4-177.6-118.4-285.6 0-108 42.4-209.6 118.4-285.6 76-76 177.6-118.4 285.6-118.4 108 0 209.6 42.4 285.6 118.4 157.6 157.6 157.6 413.6 0 571.2-76 76-177.6 118.4-285.6 118.4z m0-760c-95.2 0-184.8 36.8-252 104-67.2 67.2-104 252s36.8 184.8 104 252c67.2 67.2 156.8 104 252 104 95.2 0 184.8-36.8 252-104 139.2-139.2 139.2-364.8 0-504-67.2-67.2-156.8-104-252-104z"/><path d="M707.872 329.392L348.096 689.16l-31.68-31.68 359.776-359.768z"/><path d="M328 340.8l32-31.2 348 348-32 32z"/></svg>
+				<?php esc_html_e( 'Remove item (no confirmation)', 'satori-manifest' ); ?>
 			</li>
 			<li>
 				<svg width="15" height="15" viewBox="0 0 1024 1024" fill="#f70202" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M512 897.6c-108 0-209.6-42.4-285.6-118.4-76-76-118.4-177.6-118.4-285.6 0-108 42.4-209.6 118.4-285.6 76-76 177.6-118.4 285.6-118.4 108 0 209.6 42.4 285.6 118.4 157.6 157.6 157.6 413.6 0 571.2-76 76-177.6 118.4-285.6 118.4z m0-760c-95.2 0-184.8 36.8-252 104-67.2 67.2-104 156.8-104 252s36.8 184.8 104 252c67.2 67.2 156.8 104 252 104 95.2 0 184.8-36.8 252-104 139.2-139.2 139.2-364.8 0-504-67.2-67.2-156.8-104-252-104z"/><path d="M707.872 329.392L348.096 689.16l-31.68-31.68 359.776-359.768z"/><path d="M328 340.8l32-31.2 348 348-32 32z"/></svg>
-				<?php esc_html_e( 'Remove section — click twice to confirm', 'satori-manifest' ); ?>
+				<?php esc_html_e( 'Remove section (click twice to confirm)', 'satori-manifest' ); ?>
 			</li>
 			<li>
 				<span class="dashicons dashicons-editor-help"></span>
 				<?php esc_html_e( 'Leave price blank to use item as a subsection header', 'satori-manifest' ); ?>
 			</li>
 		</ul>
-	</details>
+	</div>
 
 	<div class="satori-manifest-sections-toolbar">
 		<button type="button" class="button satori-manifest-add-section">
