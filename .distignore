@@ -13,10 +13,12 @@
 /CLAUDE.md
 /README.md
 /node_modules
+/vendor
 /package.json
 /package-lock.json
-/webpack.config.js
 /composer.json
+/composer.lock
+/webpack.config.js
 block/src
 **/*.scss
 **/*.map

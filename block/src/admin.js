@@ -16,29 +16,29 @@
  * - Section removal uses a two-step inline confirmation so no blocking
  *   window.confirm() dialog is required.
  *
- * @package SatoriManifest
+ * @package
  * @author  Stephen Mason <steve@satori-digital.com>
  * @since   1.0.0
  */
 
-( function () {
+(function () {
 	'use strict';
 
 	// ── DOM helpers ────────────────────────────────────────────────────────────
 
 	/**
-	 * @param {string}   sel      CSS selector.
-	 * @param {Element=} context  Optional context (defaults to document).
-	 * @return {Element|null}
+	 * @param {string}   sel     CSS selector.
+	 * @param {Element=} context Optional context (defaults to document).
+	 * @return {Element|null} Matched element or null.
 	 */
-	const $ = ( sel, context = document ) => context.querySelector( sel );
+	const $ = (sel, context = document) => context.querySelector(sel);
 
 	/**
-	 * @param {string}   sel      CSS selector.
-	 * @param {Element=} context  Optional context (defaults to document).
-	 * @return {NodeList}
+	 * @param {string}   sel     CSS selector.
+	 * @param {Element=} context Optional context (defaults to document).
+	 * @return {NodeList} All matched elements.
 	 */
-	const $$ = ( sel, context = document ) => context.querySelectorAll( sel );
+	const $$ = (sel, context = document) => context.querySelectorAll(sel);
 
 	// ── Serialise ──────────────────────────────────────────────────────────────
 
@@ -46,17 +46,25 @@
 	 * Reads item rows from a section element and returns plain objects.
 	 *
 	 * @param {Element} sectionEl
-	 * @return {Array<Object>}
+	 * @return {Array<Object>} Array of item objects.
 	 */
-	function collectItems( sectionEl ) {
-		return Array.from( $$( '.satori-manifest-item', sectionEl ) ).map(
-			( row, idx ) => ( {
-				label:        row.querySelector( '.satori-manifest-item__label' )?.value        ?? '',
-				description:  row.querySelector( '.satori-manifest-item__description' )?.value  ?? '',
-				price_prefix: row.querySelector( '.satori-manifest-item__prefix' )?.value       ?? '',
-				price:        row.querySelector( '.satori-manifest-item__price' )?.value        ?? '',
-				sort_order:   idx,
-			} )
+	function collectItems(sectionEl) {
+		return Array.from($$('.satori-manifest-item', sectionEl)).map(
+			(row, idx) => ({
+				label:
+					row.querySelector('.satori-manifest-item__label')?.value ??
+					'',
+				description:
+					row.querySelector('.satori-manifest-item__description')
+						?.value ?? '',
+				price_prefix:
+					row.querySelector('.satori-manifest-item__prefix')?.value ??
+					'',
+				price:
+					row.querySelector('.satori-manifest-item__price')?.value ??
+					'',
+				sort_order: idx,
+			})
 		);
 	}
 
@@ -67,26 +75,28 @@
 	 * @return {void}
 	 */
 	function serialise() {
-		const field = $( '#satori-manifest-sections-data' );
-		if ( ! field ) {
+		const field = $('#satori-manifest-sections-data');
+		if (!field) {
 			return;
 		}
 
 		const sections = Array.from(
-			$$( '.satori-manifest-section', $( '#satori-manifest-sections-list' ) )
-		).map( ( sectionEl, idx ) => ( {
-			title:      sectionEl.querySelector( '.satori-manifest-section__title-input' )?.value ?? '',
+			$$('.satori-manifest-section', $('#satori-manifest-sections-list'))
+		).map((sectionEl, idx) => ({
+			title:
+				sectionEl.querySelector('.satori-manifest-section__title-input')
+					?.value ?? '',
 			sort_order: idx,
-			items:      collectItems( sectionEl ),
-		} ) );
+			items: collectItems(sectionEl),
+		}));
 
-		field.value = JSON.stringify( sections );
+		field.value = JSON.stringify(sections);
 	}
 
 	// Serialise before WP submits the post form so the hidden field is current.
-	const postForm = $( '#post' );
-	if ( postForm ) {
-		postForm.addEventListener( 'submit', serialise );
+	const postForm = $('#post');
+	if (postForm) {
+		postForm.addEventListener('submit', serialise);
 	}
 
 	// Debounced serialise for text input — avoids writing JSON on every keypress.
@@ -98,8 +108,8 @@
 	 * @return {void}
 	 */
 	function serialiseDebounced() {
-		clearTimeout( serialiseTimer );
-		serialiseTimer = setTimeout( serialise, 300 );
+		clearTimeout(serialiseTimer);
+		serialiseTimer = setTimeout(serialise, 300);
 	}
 
 	// ── Add section ────────────────────────────────────────────────────────────
@@ -110,17 +120,17 @@
 	 * @return {void}
 	 */
 	function addSection() {
-		const template  = $( '#satori-manifest-section-template' );
-		const container = $( '#satori-manifest-sections-list' );
+		const template = $('#satori-manifest-section-template');
+		const container = $('#satori-manifest-sections-list');
 
-		if ( ! template || ! container ) {
+		if (!template || !container) {
 			return;
 		}
 
-		const clone = template.content.cloneNode( true );
-		container.appendChild( clone );
+		const clone = template.content.cloneNode(true);
+		container.appendChild(clone);
 		container.lastElementChild
-			?.querySelector( '.satori-manifest-section__title-input' )
+			?.querySelector('.satori-manifest-section__title-input')
 			?.focus();
 
 		serialise();
@@ -136,14 +146,14 @@
 	 * does not confirm, the button resets automatically after the timeout.
 	 * This avoids the blocking window.confirm() dialog.
 	 *
-	 * @param {Element} btn  The remove button that was clicked.
+	 * @param {Element} btn The remove button that was clicked.
 	 * @return {void}
 	 */
-	function handleRemoveSectionClick( btn ) {
-		if ( btn.dataset.confirming ) {
+	function handleRemoveSectionClick(btn) {
+		if (btn.dataset.confirming) {
 			// Second click — confirmed, proceed with removal.
-			const sectionEl = btn.closest( '.satori-manifest-section' );
-			if ( sectionEl ) {
+			const sectionEl = btn.closest('.satori-manifest-section');
+			if (sectionEl) {
 				sectionEl.remove();
 				serialise();
 			}
@@ -152,15 +162,15 @@
 
 		// First click — enter confirming state.
 		btn.dataset.confirming = '1';
-		btn.classList.add( 'is-confirming' );
+		btn.classList.add('is-confirming');
 
-		setTimeout( () => {
+		setTimeout(() => {
 			// Auto-reset if the user does not confirm within 3 seconds.
-			if ( btn.isConnected ) {
+			if (btn.isConnected) {
 				delete btn.dataset.confirming;
-				btn.classList.remove( 'is-confirming' );
+				btn.classList.remove('is-confirming');
 			}
-		}, 3000 );
+		}, 3000);
 	}
 
 	// ── Add item ───────────────────────────────────────────────────────────────
@@ -171,17 +181,17 @@
 	 * @param {Element} sectionEl
 	 * @return {void}
 	 */
-	function addItem( sectionEl ) {
-		const template = $( '#satori-manifest-item-template' );
-		const tbody    = sectionEl.querySelector( '.satori-manifest-items__body' );
+	function addItem(sectionEl) {
+		const template = $('#satori-manifest-item-template');
+		const tbody = sectionEl.querySelector('.satori-manifest-items__body');
 
-		if ( ! template || ! tbody ) {
+		if (!template || !tbody) {
 			return;
 		}
 
-		const clone = template.content.cloneNode( true );
-		tbody.appendChild( clone );
-		tbody.lastElementChild?.querySelector( 'input' )?.focus();
+		const clone = template.content.cloneNode(true);
+		tbody.appendChild(clone);
+		tbody.lastElementChild?.querySelector('input')?.focus();
 
 		serialise();
 	}
@@ -191,10 +201,10 @@
 	/**
 	 * Removes an item row.
 	 *
-	 * @param {Element} rowEl  The <tr> element.
+	 * @param {Element} rowEl The <tr> element.
 	 * @return {void}
 	 */
-	function removeItem( rowEl ) {
+	function removeItem(rowEl) {
 		rowEl.remove();
 		serialise();
 	}
@@ -207,10 +217,10 @@
 	 * @param {Element} sectionEl
 	 * @return {void}
 	 */
-	function moveUp( sectionEl ) {
+	function moveUp(sectionEl) {
 		const prev = sectionEl.previousElementSibling;
-		if ( prev ) {
-			sectionEl.parentNode.insertBefore( sectionEl, prev );
+		if (prev) {
+			sectionEl.parentNode.insertBefore(sectionEl, prev);
 			serialise();
 		}
 	}
@@ -221,10 +231,10 @@
 	 * @param {Element} sectionEl
 	 * @return {void}
 	 */
-	function moveDown( sectionEl ) {
+	function moveDown(sectionEl) {
 		const next = sectionEl.nextElementSibling;
-		if ( next ) {
-			sectionEl.parentNode.insertBefore( next, sectionEl );
+		if (next) {
+			sectionEl.parentNode.insertBefore(next, sectionEl);
 			serialise();
 		}
 	}
@@ -234,13 +244,13 @@
 	/**
 	 * Moves an item row one position up in its tbody.
 	 *
-	 * @param {Element} rowEl  The <tr> element.
+	 * @param {Element} rowEl The <tr> element.
 	 * @return {void}
 	 */
-	function moveItemUp( rowEl ) {
+	function moveItemUp(rowEl) {
 		const prev = rowEl.previousElementSibling;
-		if ( prev ) {
-			rowEl.parentNode.insertBefore( rowEl, prev );
+		if (prev) {
+			rowEl.parentNode.insertBefore(rowEl, prev);
 			serialise();
 		}
 	}
@@ -248,13 +258,13 @@
 	/**
 	 * Moves an item row one position down in its tbody.
 	 *
-	 * @param {Element} rowEl  The <tr> element.
+	 * @param {Element} rowEl The <tr> element.
 	 * @return {void}
 	 */
-	function moveItemDown( rowEl ) {
+	function moveItemDown(rowEl) {
 		const next = rowEl.nextElementSibling;
-		if ( next ) {
-			rowEl.parentNode.insertBefore( next, rowEl );
+		if (next) {
+			rowEl.parentNode.insertBefore(next, rowEl);
 			serialise();
 		}
 	}
@@ -269,24 +279,26 @@
 	 * @param {Element} sectionEl
 	 * @return {void}
 	 */
-	function toggleSection( sectionEl ) {
-		const body   = sectionEl.querySelector( '.satori-manifest-section__body' );
-		const toggle = sectionEl.querySelector( '.satori-manifest-section__toggle' );
-		if ( ! body || ! toggle ) {
+	function toggleSection(sectionEl) {
+		const body = sectionEl.querySelector('.satori-manifest-section__body');
+		const toggle = sectionEl.querySelector(
+			'.satori-manifest-section__toggle'
+		);
+		if (!body || !toggle) {
 			return;
 		}
-		const isExpanded = toggle.getAttribute( 'aria-expanded' ) === 'true';
-		toggle.setAttribute( 'aria-expanded', isExpanded ? 'false' : 'true' );
-		body.classList.toggle( 'is-collapsed', isExpanded );
+		const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+		toggle.setAttribute('aria-expanded', isExpanded ? 'false' : 'true');
+		body.classList.toggle('is-collapsed', isExpanded);
 	}
 
 	// ── Input change → serialise (debounced) ───────────────────────────────────
 
 	// Keep the hidden field in sync as the user types, debounced to avoid
 	// writing JSON on every keypress for large manifests.
-	const metabox = $( '.satori-manifest-metabox' );
-	if ( metabox ) {
-		metabox.addEventListener( 'input', serialiseDebounced );
+	const metabox = $('.satori-manifest-metabox');
+	if (metabox) {
+		metabox.addEventListener('input', serialiseDebounced);
 	}
 
 	// ── Delegated click handler ────────────────────────────────────────────────
@@ -294,89 +306,93 @@
 	// A single delegated listener handles all button clicks. Delegation is used
 	// because sections and items are cloned from <template> elements at runtime
 	// and do not exist when this script first executes.
-	document.addEventListener( 'click', ( e ) => {
-		const target = /** @type {Element} */ ( e.target );
+	document.addEventListener('click', (e) => {
+		const target = /** @type {Element} */ (e.target);
 
 		// Add section.
-		if ( target.closest( '.satori-manifest-add-section' ) ) {
+		if (target.closest('.satori-manifest-add-section')) {
 			addSection();
 			return;
 		}
 
 		// Remove section (two-step confirmation).
-		const removeSecBtn = target.closest( '.satori-manifest-section__remove' );
-		if ( removeSecBtn ) {
-			handleRemoveSectionClick( removeSecBtn );
+		const removeSecBtn = target.closest('.satori-manifest-section__remove');
+		if (removeSecBtn) {
+			handleRemoveSectionClick(removeSecBtn);
 			return;
 		}
 
 		// Add item row.
-		const addItemBtn = target.closest( '.satori-manifest-items__add-row' );
-		if ( addItemBtn ) {
-			const sec = addItemBtn.closest( '.satori-manifest-section' );
-			if ( sec ) {
-				addItem( sec );
+		const addItemBtn = target.closest('.satori-manifest-items__add-row');
+		if (addItemBtn) {
+			const sec = addItemBtn.closest('.satori-manifest-section');
+			if (sec) {
+				addItem(sec);
 			}
 			return;
 		}
 
 		// Remove item row.
-		const removeItemBtn = target.closest( '.satori-manifest-item__remove' );
-		if ( removeItemBtn ) {
-			const row = removeItemBtn.closest( '.satori-manifest-item' );
-			if ( row ) {
-				removeItem( row );
+		const removeItemBtn = target.closest('.satori-manifest-item__remove');
+		if (removeItemBtn) {
+			const row = removeItemBtn.closest('.satori-manifest-item');
+			if (row) {
+				removeItem(row);
 			}
 			return;
 		}
 
 		// Move item up.
-		const moveItemUpBtn = target.closest( '.satori-manifest-item__move-up' );
-		if ( moveItemUpBtn ) {
-			const row = moveItemUpBtn.closest( '.satori-manifest-item' );
-			if ( row ) {
-				moveItemUp( row );
+		const moveItemUpBtn = target.closest('.satori-manifest-item__move-up');
+		if (moveItemUpBtn) {
+			const row = moveItemUpBtn.closest('.satori-manifest-item');
+			if (row) {
+				moveItemUp(row);
 			}
 			return;
 		}
 
 		// Move item down.
-		const moveItemDownBtn = target.closest( '.satori-manifest-item__move-down' );
-		if ( moveItemDownBtn ) {
-			const row = moveItemDownBtn.closest( '.satori-manifest-item' );
-			if ( row ) {
-				moveItemDown( row );
+		const moveItemDownBtn = target.closest(
+			'.satori-manifest-item__move-down'
+		);
+		if (moveItemDownBtn) {
+			const row = moveItemDownBtn.closest('.satori-manifest-item');
+			if (row) {
+				moveItemDown(row);
 			}
 			return;
 		}
 
 		// Move section up.
-		const moveUpBtn = target.closest( '.satori-manifest-section__move-up' );
-		if ( moveUpBtn ) {
-			const sec = moveUpBtn.closest( '.satori-manifest-section' );
-			if ( sec ) {
-				moveUp( sec );
+		const moveUpBtn = target.closest('.satori-manifest-section__move-up');
+		if (moveUpBtn) {
+			const sec = moveUpBtn.closest('.satori-manifest-section');
+			if (sec) {
+				moveUp(sec);
 			}
 			return;
 		}
 
 		// Move section down.
-		const moveDownBtn = target.closest( '.satori-manifest-section__move-down' );
-		if ( moveDownBtn ) {
-			const sec = moveDownBtn.closest( '.satori-manifest-section' );
-			if ( sec ) {
-				moveDown( sec );
+		const moveDownBtn = target.closest(
+			'.satori-manifest-section__move-down'
+		);
+		if (moveDownBtn) {
+			const sec = moveDownBtn.closest('.satori-manifest-section');
+			if (sec) {
+				moveDown(sec);
 			}
 			return;
 		}
 
 		// Toggle section body open/closed.
-		const toggleBtn = target.closest( '.satori-manifest-section__toggle' );
-		if ( toggleBtn ) {
-			const sec = toggleBtn.closest( '.satori-manifest-section' );
-			if ( sec ) {
-				toggleSection( sec );
+		const toggleBtn = target.closest('.satori-manifest-section__toggle');
+		if (toggleBtn) {
+			const sec = toggleBtn.closest('.satori-manifest-section');
+			if (sec) {
+				toggleSection(sec);
 			}
 		}
-	} );
-} )();
+	});
+})();

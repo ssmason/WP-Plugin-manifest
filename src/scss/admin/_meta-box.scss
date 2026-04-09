@@ -195,6 +195,7 @@
 
 		// Body — hidden when section is collapsed.
 		&__body {
+
 			&.is-collapsed {
 				display: none;
 			}

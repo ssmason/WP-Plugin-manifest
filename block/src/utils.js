@@ -5,7 +5,7 @@
  * dedicated module prevents utility logic from accumulating inside component
  * files and makes them independently testable.
  *
- * @package SatoriManifest
+ * @package
  * @author  Stephen Mason <steve@satori-digital.com>
  * @since   1.0.0
  */
@@ -16,16 +16,16 @@
  * Returns an empty array on missing or malformed JSON so components never
  * throw on a bad or absent REST API response.
  *
- * @param {string|undefined} raw  Raw JSON string from post meta.
+ * @param {string|undefined} raw Raw JSON string from post meta.
  * @return {Array} Decoded sections array, or [] on failure.
  */
-export function parseSections( raw ) {
-	if ( ! raw ) {
+export function parseSections(raw) {
+	if (!raw) {
 		return [];
 	}
 	try {
-		const parsed = JSON.parse( raw );
-		return Array.isArray( parsed ) ? parsed : [];
+		const parsed = JSON.parse(raw);
+		return Array.isArray(parsed) ? parsed : [];
 	} catch {
 		return [];
 	}
@@ -37,12 +37,12 @@ export function parseSections( raw ) {
  * Uses Intl.NumberFormat for locale-aware output, matching the
  * number_format_i18n() behaviour on the PHP frontend.
  *
- * @param {string|number} value  Raw price value.
+ * @param {string|number} value Raw price value.
  * @return {string} Locale-formatted price string (e.g. "12.50").
  */
-export function formatPrice( value ) {
-	return new Intl.NumberFormat( document.documentElement.lang || 'en', {
+export function formatPrice(value) {
+	return new Intl.NumberFormat(document.documentElement.lang || 'en', {
 		minimumFractionDigits: 2,
 		maximumFractionDigits: 2,
-	} ).format( parseFloat( value ) || 0 );
+	}).format(parseFloat(value) || 0);
 }

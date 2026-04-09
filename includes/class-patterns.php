@@ -130,8 +130,12 @@ class Patterns {
 			return;
 		}
 
+		// seed_user_patterns() checks for existing posts by meta key before
+		// inserting, so concurrent requests on a fresh install cannot create
+		// duplicates. update_option() persists the seeded version so this path
+		// only runs once per plugin version (including upgrades).
 		self::seed_user_patterns();
-		update_option( 'satori_manifest_patterns_seeded', SATORI_MANIFEST_VERSION );
+		update_option( 'satori_manifest_patterns_seeded', SATORI_MANIFEST_VERSION, false );
 	}
 
 	/**
@@ -149,14 +153,17 @@ class Patterns {
 	 */
 	public static function seed_user_patterns(): void {
 		foreach ( self::get_pattern_definitions() as $definition ) {
+			// Check by slug meta key rather than translated title so this is
+			// safe to call on any locale.
 			$existing = get_posts(
 				array(
 					'post_type'              => 'wp_block',
-					'title'                  => $definition['title'],
-					'post_status'            => 'publish',
+					'post_status'            => 'any',
 					'numberposts'            => 1,
 					'update_post_meta_cache' => false,
 					'update_post_term_cache' => false,
+					'meta_key'               => '_satori_manifest_pattern_slug', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- indexed meta on small wp_block table.
+					'meta_value'             => $definition['slug'], // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 				)
 			);
 
@@ -174,8 +181,12 @@ class Patterns {
 			);
 
 			// Unsynced — edits to this copy do not affect other usages.
+			// _satori_manifest_seeded_pattern flags the post for cleanup on uninstall.
+			// _satori_manifest_pattern_slug allows locale-safe duplicate detection.
 			if ( $post_id && ! is_wp_error( $post_id ) ) {
 				update_post_meta( $post_id, 'wp_pattern_sync_status', 'unsynced' );
+				update_post_meta( $post_id, '_satori_manifest_seeded_pattern', '1' );
+				update_post_meta( $post_id, '_satori_manifest_pattern_slug', $definition['slug'] );
 			}
 		}
 	}

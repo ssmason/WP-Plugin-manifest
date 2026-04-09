@@ -39,16 +39,29 @@ class Manifest_Repository {
 	 * @return \WP_Post[]  Array of WP_Post objects.
 	 */
 	public static function get_all(): array {
+		// meta_query uses OR/NOT EXISTS so manifests without a sort-order meta
+		// (e.g. created via WP-CLI or imported) are included rather than silently
+		// dropped by an implicit INNER JOIN.
 		return get_posts(
 			array(
 				'post_type'      => Post_Types::CPT_MANIFEST,
-				'posts_per_page' => -1,
+				'posts_per_page' => -1, // phpcs:ignore WordPress.WP.PostsPerPage.posts_per_page_posts_per_page -- full list required; no pagination context.
 				'post_status'    => 'publish',
 				'orderby'        => array(
 					'meta_value_num' => 'ASC',
 					'title'          => 'ASC',
 				),
-				'meta_key'       => Post_Types::META_ORDER, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+				'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- OR/NOT EXISTS needed to include posts without order meta.
+					'relation' => 'OR',
+					array(
+						'key'     => Post_Types::META_ORDER,
+						'compare' => 'EXISTS',
+					),
+					array(
+						'key'     => Post_Types::META_ORDER,
+						'compare' => 'NOT EXISTS',
+					),
+				),
 			)
 		);
 	}

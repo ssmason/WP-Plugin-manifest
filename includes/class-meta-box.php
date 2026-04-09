@@ -151,12 +151,12 @@ class Meta_Box {
 			return;
 		}
 
-		// Verify nonce via Security; bail silently on failure.
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- verified via Security::verify_form_nonce() below.
+		// Nonce is verified via Security::verify_form_nonce() below.
+		// phpcs:disable WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		$nonce = isset( $_POST[ Security::NONCE_FIELD ] )
-			// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			? sanitize_text_field( wp_unslash( (string) $_POST[ Security::NONCE_FIELD ] ) )
 			: '';
+		// phpcs:enable WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
 		if ( ! Security::verify_form_nonce( $nonce, self::NONCE_ACTION ) ) {
 			return;
@@ -170,11 +170,11 @@ class Meta_Box {
 		// Read the raw JSON. Only wp_unslash() here — sanitize_text_field() would
 		// strip angle-bracket characters and corrupt the JSON before decoding.
 		// Field-level sanitization is handled by Sanitizer after decode.
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- nonce verified above via Security::verify_form_nonce().
+		// phpcs:disable WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		$raw = isset( $_POST[ self::POST_FIELD ] )
-			// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			? wp_unslash( (string) $_POST[ self::POST_FIELD ] )
 			: '[]';
+		// phpcs:enable WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		$decoded = json_decode( $raw, true );
 
 		$sections = is_array( $decoded ) ? Sanitizer::sanitize_sections( $decoded ) : array();

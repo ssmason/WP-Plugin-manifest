@@ -3,7 +3,7 @@
  *
  * Registers the satori-manifest/price-list block in the editor.
  *
- * @package SatoriManifest
+ * @package
  * @author  Stephen Mason <steve@satori-digital.com>
  * @since   1.0.0
  */

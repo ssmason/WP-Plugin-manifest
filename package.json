@@ -9,7 +9,7 @@
 		"dev": "webpack --mode development --watch",
 		"lint:js": "eslint \"block/src/**/*.js\"",
 		"lint:scss": "stylelint \"src/scss/**/*.scss\"",
-		"lint:php": "phpcs --standard=.phpcs.xml .",
+		"lint:php": "./vendor/bin/phpcs --standard=.phpcs.xml .",
 		"pot": "wp i18n make-pot . languages/satori-manifest.pot",
 		"test:php": "wp-env run tests-cli bash -c 'cd /var/www/html/wp-content/plugins/wp-satori-manifest && composer install --no-interaction --quiet && phpunit'",
 		"cypress:open": "cypress open",

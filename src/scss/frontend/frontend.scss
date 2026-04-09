@@ -317,7 +317,9 @@ $b: ".satori-manifest-price-list";
 // ─── Responsive: collapse two-column below 600px ─────────────────────────────
 
 @container (max-width: 600px) {
+
 	.satori-manifest-price-list.is-layout-two-column {
+
 		.satori-manifest-price-list__manifest {
 			grid-template-columns: 1fr;
 		}

@@ -101,13 +101,33 @@ class Multisite {
 		$posts = get_posts(
 			array(
 				'post_type'      => Post_Types::CPT_MANIFEST,
-				'posts_per_page' => -1,
+				'posts_per_page' => -1, // phpcs:ignore WordPress.WP.PostsPerPage.posts_per_page_posts_per_page -- full list required for complete uninstall.
 				'post_status'    => 'any',
 				'fields'         => 'ids',
 			)
 		);
 
 		foreach ( $posts as $post_id ) {
+			wp_delete_post( (int) $post_id, true );
+		}
+
+		// Delete seeded wp_block pattern posts created by Patterns::seed_user_patterns().
+		// Identified by _satori_manifest_seeded_pattern meta so the lookup is
+		// locale-safe — translated titles are not relied upon here.
+		$pattern_posts = get_posts(
+			array(
+				'post_type'              => 'wp_block',
+				'post_status'            => 'any',
+				'fields'                 => 'ids',
+				'posts_per_page'         => -1, // phpcs:ignore WordPress.WP.PostsPerPage.posts_per_page_posts_per_page -- full list required for complete uninstall.
+				'update_post_meta_cache' => false,
+				'update_post_term_cache' => false,
+				'meta_key'               => '_satori_manifest_seeded_pattern', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- indexed meta on small wp_block table.
+				'meta_value'             => '1', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+			)
+		);
+
+		foreach ( $pattern_posts as $post_id ) {
 			wp_delete_post( (int) $post_id, true );
 		}
 

@@ -4,7 +4,7 @@
  * Renders the InspectorControls panel for the price-list block,
  * providing manifest selection, layout preset, and display toggles.
  *
- * @package SatoriManifest
+ * @package
  * @author  Stephen Mason <steve@satori-digital.com>
  * @since   1.0.0
  */
@@ -36,12 +36,42 @@ import { useSelect } from '@wordpress/data';
  * @type {Array<{value: string, label: string, bg: string, accent: string}>}
  */
 const SCHEME_OPTIONS = [
-	{ value: 'default',    label: __( 'Default',    'satori-manifest' ), bg: '#FDFAF5', accent: '#1C1712' },
-	{ value: 'warm',       label: __( 'Warm',       'satori-manifest' ), bg: '#EDE6D6', accent: '#5C4E3A' },
-	{ value: 'terracotta', label: __( 'Terracotta', 'satori-manifest' ), bg: '#EDE6D6', accent: '#B5704A' },
-	{ value: 'dark',       label: __( 'Dark',       'satori-manifest' ), bg: '#1C1712', accent: '#FDFAF5' },
-	{ value: 'minimal',    label: __( 'Minimal',    'satori-manifest' ), bg: '#D4C5A9', accent: '#5C4E3A' },
-	{ value: 'custom',     label: __( 'Custom',     'satori-manifest' ), bg: null,      accent: null },
+	{
+		value: 'default',
+		label: __('Default', 'satori-manifest'),
+		bg: '#FDFAF5',
+		accent: '#1C1712',
+	},
+	{
+		value: 'warm',
+		label: __('Warm', 'satori-manifest'),
+		bg: '#EDE6D6',
+		accent: '#5C4E3A',
+	},
+	{
+		value: 'terracotta',
+		label: __('Terracotta', 'satori-manifest'),
+		bg: '#EDE6D6',
+		accent: '#B5704A',
+	},
+	{
+		value: 'dark',
+		label: __('Dark', 'satori-manifest'),
+		bg: '#1C1712',
+		accent: '#FDFAF5',
+	},
+	{
+		value: 'minimal',
+		label: __('Minimal', 'satori-manifest'),
+		bg: '#D4C5A9',
+		accent: '#5C4E3A',
+	},
+	{
+		value: 'custom',
+		label: __('Custom', 'satori-manifest'),
+		bg: null,
+		accent: null,
+	},
 ];
 
 /**
@@ -52,10 +82,10 @@ const SCHEME_OPTIONS = [
  * @type {Array<{label: string, value: string}>}
  */
 const LAYOUT_OPTIONS = [
-	{ label: __( 'Classic List', 'satori-manifest' ), value: 'single-column' },
-	{ label: __( 'Split Grid', 'satori-manifest' ), value: 'two-column' },
-	{ label: __( 'Card Style', 'satori-manifest' ), value: 'card-style' },
-	{ label: __( 'Minimal', 'satori-manifest' ), value: 'minimal' },
+	{ label: __('Classic List', 'satori-manifest'), value: 'single-column' },
+	{ label: __('Split Grid', 'satori-manifest'), value: 'two-column' },
+	{ label: __('Card Style', 'satori-manifest'), value: 'card-style' },
+	{ label: __('Minimal', 'satori-manifest'), value: 'minimal' },
 ];
 
 /**
@@ -89,32 +119,80 @@ const LAYOUT_OPTIONS = [
  * @type {Array<{label: string, value: string}>}
  */
 const FONT_FAMILY_OPTIONS = [
-	{ label: __( 'Default',                   'satori-manifest' ), value: '' },
-	{ label: __( 'Cormorant Garamond (theme)', 'satori-manifest' ), value: "'Cormorant Garamond', Georgia, serif" },
-	{ label: __( 'DM Sans (theme)',            'satori-manifest' ), value: "'DM Sans', sans-serif" },
-	{ label: __( 'Georgia',                   'satori-manifest' ), value: "Georgia, 'Times New Roman', serif" },
-	{ label: __( 'Times New Roman',           'satori-manifest' ), value: "'Times New Roman', Times, serif" },
-	{ label: __( 'Palatino',                  'satori-manifest' ), value: "'Palatino Linotype', Palatino, 'Book Antiqua', serif" },
-	{ label: __( 'Garamond',                  'satori-manifest' ), value: "Garamond, 'Times New Roman', serif" },
-	{ label: __( 'Book Antiqua',              'satori-manifest' ), value: "'Book Antiqua', Palatino, serif" },
-	{ label: __( 'System UI',                 'satori-manifest' ), value: "system-ui, -apple-system, BlinkMacSystemFont, sans-serif" },
-	{ label: __( 'Arial / Helvetica',         'satori-manifest' ), value: "Arial, Helvetica, sans-serif" },
-	{ label: __( 'Verdana',                   'satori-manifest' ), value: "Verdana, Geneva, sans-serif" },
-	{ label: __( 'Trebuchet MS',              'satori-manifest' ), value: "'Trebuchet MS', Helvetica, sans-serif" },
-	{ label: __( 'Tahoma',                    'satori-manifest' ), value: "Tahoma, Geneva, sans-serif" },
-	{ label: __( 'Gill Sans',                 'satori-manifest' ), value: "'Gill Sans', 'Gill Sans MT', Calibri, sans-serif" },
-	{ label: __( 'Optima',                    'satori-manifest' ), value: "Optima, Segoe, 'Segoe UI', Candara, sans-serif" },
-	{ label: __( 'Monospace',                 'satori-manifest' ), value: "ui-monospace, 'Courier New', Courier, monospace" },
-	{ label: __( 'Courier New',               'satori-manifest' ), value: "'Courier New', Courier, monospace" },
+	{ label: __('Default', 'satori-manifest'), value: '' },
+	{
+		label: __('Cormorant Garamond', 'satori-manifest'),
+		value: "'Cormorant Garamond', Georgia, serif",
+	},
+	{
+		label: __('DM Sans', 'satori-manifest'),
+		value: "'DM Sans', sans-serif",
+	},
+	{
+		label: __('Georgia', 'satori-manifest'),
+		value: "Georgia, 'Times New Roman', serif",
+	},
+	{
+		label: __('Times New Roman', 'satori-manifest'),
+		value: "'Times New Roman', Times, serif",
+	},
+	{
+		label: __('Palatino', 'satori-manifest'),
+		value: "'Palatino Linotype', Palatino, 'Book Antiqua', serif",
+	},
+	{
+		label: __('Garamond', 'satori-manifest'),
+		value: "Garamond, 'Times New Roman', serif",
+	},
+	{
+		label: __('Book Antiqua', 'satori-manifest'),
+		value: "'Book Antiqua', Palatino, serif",
+	},
+	{
+		label: __('System UI', 'satori-manifest'),
+		value: 'system-ui, -apple-system, BlinkMacSystemFont, sans-serif',
+	},
+	{
+		label: __('Arial / Helvetica', 'satori-manifest'),
+		value: 'Arial, Helvetica, sans-serif',
+	},
+	{
+		label: __('Verdana', 'satori-manifest'),
+		value: 'Verdana, Geneva, sans-serif',
+	},
+	{
+		label: __('Trebuchet MS', 'satori-manifest'),
+		value: "'Trebuchet MS', Helvetica, sans-serif",
+	},
+	{
+		label: __('Tahoma', 'satori-manifest'),
+		value: 'Tahoma, Geneva, sans-serif',
+	},
+	{
+		label: __('Gill Sans', 'satori-manifest'),
+		value: "'Gill Sans', 'Gill Sans MT', Calibri, sans-serif",
+	},
+	{
+		label: __('Optima', 'satori-manifest'),
+		value: "Optima, Segoe, 'Segoe UI', Candara, sans-serif",
+	},
+	{
+		label: __('Monospace', 'satori-manifest'),
+		value: "ui-monospace, 'Courier New', Courier, monospace",
+	},
+	{
+		label: __('Courier New', 'satori-manifest'),
+		value: "'Courier New', Courier, monospace",
+	},
 ];
 
 const FONT_WEIGHT_OPTIONS = [
-	{ label: __( 'Default', 'satori-manifest' ), value: '' },
-	{ label: __( 'Light (300)',   'satori-manifest' ), value: '300' },
-	{ label: __( 'Regular (400)', 'satori-manifest' ), value: '400' },
-	{ label: __( 'Medium (500)',  'satori-manifest' ), value: '500' },
-	{ label: __( 'Semi-bold (600)', 'satori-manifest' ), value: '600' },
-	{ label: __( 'Bold (700)',    'satori-manifest' ), value: '700' },
+	{ label: __('Default', 'satori-manifest'), value: '' },
+	{ label: __('Light (300)', 'satori-manifest'), value: '300' },
+	{ label: __('Regular (400)', 'satori-manifest'), value: '400' },
+	{ label: __('Medium (500)', 'satori-manifest'), value: '500' },
+	{ label: __('Semi-bold (600)', 'satori-manifest'), value: '600' },
+	{ label: __('Bold (700)', 'satori-manifest'), value: '700' },
 ];
 
 const MANIFEST_QUERY = {
@@ -132,7 +210,7 @@ const MANIFEST_QUERY = {
  * @param {Function} props.setAttributes Attribute setter.
  * @return {JSX.Element} Inspector controls panel.
  */
-export default function Inspector( { attributes, setAttributes } ) {
+export default function Inspector({ attributes, setAttributes }) {
 	const {
 		manifestIds,
 		layout,
@@ -158,8 +236,8 @@ export default function Inspector( { attributes, setAttributes } ) {
 	} = attributes;
 
 	// Load all published manifests via the WP REST API.
-	const { manifests, isLoading } = useSelect( ( select ) => {
-		const store = select( 'core' );
+	const { manifests, isLoading } = useSelect((select) => {
+		const store = select('core');
 
 		return {
 			manifests: store.getEntityRecords(
@@ -167,13 +245,13 @@ export default function Inspector( { attributes, setAttributes } ) {
 				'sm_manifest',
 				MANIFEST_QUERY
 			),
-			isLoading: ! store.hasFinishedResolution( 'getEntityRecords', [
+			isLoading: !store.hasFinishedResolution('getEntityRecords', [
 				'postType',
 				'sm_manifest',
 				MANIFEST_QUERY,
-			] ),
+			]),
 		};
-	} );
+	});
 
 	/**
 	 * Toggles a manifest ID in the manifestIds attribute array.
@@ -183,299 +261,318 @@ export default function Inspector( { attributes, setAttributes } ) {
 	 * @return {void}
 	 */
 	const toggleManifest = useCallback(
-		( id, checked ) => {
+		(id, checked) => {
 			const next = checked
-				? [ ...manifestIds, id ]
-				: manifestIds.filter( ( m ) => m !== id );
-			setAttributes( { manifestIds: next } );
+				? [...manifestIds, id]
+				: manifestIds.filter((m) => m !== id);
+			setAttributes({ manifestIds: next });
 		},
-		[ manifestIds, setAttributes ]
+		[manifestIds, setAttributes]
 	);
 
 	return (
 		<InspectorControls>
 			<PanelBody
-				title={ __( 'Manifests', 'satori-manifest' ) }
-				initialOpen={ true }
+				title={__('Manifests', 'satori-manifest')}
+				initialOpen={true}
 			>
-				{ isLoading && <Spinner /> }
-				{ ! isLoading && ( ! manifests || manifests.length === 0 ) && (
+				{isLoading && <Spinner />}
+				{!isLoading && (!manifests || manifests.length === 0) && (
 					<p>
-						{ __(
+						{__(
 							'No manifests found. Create one under Manifest → All Manifests.',
 							'satori-manifest'
-						) }
+						)}
 					</p>
-				) }
-				{ ! isLoading &&
+				)}
+				{!isLoading &&
 					manifests &&
-					manifests.map( ( manifest ) => (
+					manifests.map((manifest) => (
 						<CheckboxControl
-							key={ manifest.id }
-							label={ manifest.title.rendered }
-							checked={ manifestIds.includes( manifest.id ) }
-							onChange={ ( checked ) =>
-								toggleManifest( manifest.id, checked )
+							key={manifest.id}
+							label={manifest.title.rendered}
+							checked={manifestIds.includes(manifest.id)}
+							onChange={(checked) =>
+								toggleManifest(manifest.id, checked)
 							}
 						/>
-					) ) }
+					))}
 			</PanelBody>
 
 			<PanelBody
-				title={ __( 'Layout', 'satori-manifest' ) }
-				initialOpen={ true }
+				title={__('Layout', 'satori-manifest')}
+				initialOpen={true}
 			>
 				<SelectControl
-					label={ __( 'Display style', 'satori-manifest' ) }
-					value={ layout }
-					options={ LAYOUT_OPTIONS }
-					onChange={ ( value ) => setAttributes( { layout: value } ) }
+					label={__('Display style', 'satori-manifest')}
+					value={layout}
+					options={LAYOUT_OPTIONS}
+					onChange={(value) => setAttributes({ layout: value })}
 				/>
 			</PanelBody>
 
 			<PanelBody
-				title={ __( 'Colour Scheme', 'satori-manifest' ) }
-				initialOpen={ true }
+				title={__('Colour Scheme', 'satori-manifest')}
+				initialOpen={true}
 			>
 				<div className="satori-manifest-scheme-picker">
-					{ SCHEME_OPTIONS.map( ( scheme ) => (
+					{SCHEME_OPTIONS.map((scheme) => (
 						<Button
-							key={ scheme.value }
-							className={ `satori-manifest-scheme-option${ colorScheme === scheme.value ? ' is-active' : '' }` }
-							onClick={ () =>
-								setAttributes( { colorScheme: scheme.value } )
+							key={scheme.value}
+							className={`satori-manifest-scheme-option${colorScheme === scheme.value ? ' is-active' : ''}`}
+							onClick={() =>
+								setAttributes({ colorScheme: scheme.value })
 							}
-							aria-label={ scheme.label }
-							aria-pressed={ colorScheme === scheme.value }
+							aria-label={scheme.label}
+							aria-pressed={colorScheme === scheme.value}
 						>
 							<span
 								className={
 									'satori-manifest-scheme-option__swatch' +
-									( scheme.value === 'custom'
+									(scheme.value === 'custom'
 										? ' satori-manifest-scheme-option__swatch--custom'
-										: '' )
+										: '')
 								}
 								style={
 									scheme.bg
-										? { background: scheme.bg, borderColor: scheme.accent }
+										? {
+												background: scheme.bg,
+												borderColor: scheme.accent,
+											}
 										: {}
 								}
 								aria-hidden="true"
 							/>
 							<span className="satori-manifest-scheme-option__label">
-								{ scheme.label }
+								{scheme.label}
 							</span>
 						</Button>
-					) ) }
+					))}
 				</div>
 
-				{ colorScheme === 'custom' && (
+				{colorScheme === 'custom' && (
 					<div className="satori-manifest-custom-colors">
 						<div className="satori-manifest-custom-color">
-							<label className="satori-manifest-custom-color__label">
-								{ __( 'Background', 'satori-manifest' ) }
+							<label
+								htmlFor="sm-custom-bg-color"
+								className="satori-manifest-custom-color__label"
+							>
+								{__('Background', 'satori-manifest')}
 							</label>
 							<input
+								id="sm-custom-bg-color"
 								type="color"
 								className="satori-manifest-custom-color__input"
-								value={ customBgColor || '#f5f0e8' }
-								onChange={ ( e ) =>
-									setAttributes( { customBgColor: e.target.value } )
+								value={customBgColor || '#f5f0e8'}
+								onChange={(e) =>
+									setAttributes({
+										customBgColor: e.target.value,
+									})
 								}
 							/>
 						</div>
 						<div className="satori-manifest-custom-color">
-							<label className="satori-manifest-custom-color__label">
-								{ __( 'Accent', 'satori-manifest' ) }
+							<label
+								htmlFor="sm-custom-accent-color"
+								className="satori-manifest-custom-color__label"
+							>
+								{__('Accent', 'satori-manifest')}
 							</label>
 							<input
+								id="sm-custom-accent-color"
 								type="color"
 								className="satori-manifest-custom-color__input"
-								value={ customAccentColor || '#1c1712' }
-								onChange={ ( e ) =>
-									setAttributes( { customAccentColor: e.target.value } )
+								value={customAccentColor || '#1c1712'}
+								onChange={(e) =>
+									setAttributes({
+										customAccentColor: e.target.value,
+									})
 								}
 							/>
 						</div>
 						<div className="satori-manifest-custom-color">
-							<label className="satori-manifest-custom-color__label">
-								{ __( 'Title', 'satori-manifest' ) }
+							<label
+								htmlFor="sm-custom-title-color"
+								className="satori-manifest-custom-color__label"
+							>
+								{__('Title', 'satori-manifest')}
 							</label>
 							<input
+								id="sm-custom-title-color"
 								type="color"
 								className="satori-manifest-custom-color__input"
-								value={ customTitleColor || customAccentColor || '#1c1712' }
-								onChange={ ( e ) =>
-									setAttributes( { customTitleColor: e.target.value } )
+								value={
+									customTitleColor ||
+									customAccentColor ||
+									'#1c1712'
+								}
+								onChange={(e) =>
+									setAttributes({
+										customTitleColor: e.target.value,
+									})
 								}
 							/>
 						</div>
 						<div className="satori-manifest-custom-color">
-							<label className="satori-manifest-custom-color__label">
-								{ __( 'Card', 'satori-manifest' ) }
+							<label
+								htmlFor="sm-custom-card-color"
+								className="satori-manifest-custom-color__label"
+							>
+								{__('Card', 'satori-manifest')}
 							</label>
 							<input
+								id="sm-custom-card-color"
 								type="color"
 								className="satori-manifest-custom-color__input"
-								value={ customCardColor || '#ffffff' }
-								onChange={ ( e ) =>
-									setAttributes( { customCardColor: e.target.value } )
+								value={customCardColor || '#ffffff'}
+								onChange={(e) =>
+									setAttributes({
+										customCardColor: e.target.value,
+									})
 								}
 							/>
 						</div>
 					</div>
-				) }
+				)}
 			</PanelBody>
 
 			<PanelBody
-				title={ __( 'Typography', 'satori-manifest' ) }
-				initialOpen={ false }
+				title={__('Typography', 'satori-manifest')}
+				initialOpen={false}
 			>
 				<p className="satori-manifest-typo-label">
-					{ __( 'Section title', 'satori-manifest' ) }
+					{__('Section title', 'satori-manifest')}
 				</p>
 				<SelectControl
-					label={ __( 'Font family', 'satori-manifest' ) }
-					value={ titleFontFamily }
-					options={ FONT_FAMILY_OPTIONS }
-					onChange={ ( val ) =>
-						setAttributes( { titleFontFamily: val } )
-					}
+					label={__('Font family', 'satori-manifest')}
+					value={titleFontFamily}
+					options={FONT_FAMILY_OPTIONS}
+					onChange={(val) => setAttributes({ titleFontFamily: val })}
 				/>
 				<RangeControl
-					label={ __( 'Font size (px)', 'satori-manifest' ) }
-					value={ titleFontSize || 0 }
-					onChange={ ( val ) =>
-						setAttributes( { titleFontSize: val ?? 0 } )
+					label={__('Font size (px)', 'satori-manifest')}
+					value={titleFontSize || 0}
+					onChange={(val) =>
+						setAttributes({ titleFontSize: val ?? 0 })
 					}
-					min={ 10 }
-					max={ 48 }
+					min={10}
+					max={48}
 					allowReset
-					resetFallbackValue={ 0 }
+					resetFallbackValue={0}
 				/>
 				<SelectControl
-					label={ __( 'Font weight', 'satori-manifest' ) }
-					value={ titleFontWeight }
-					options={ FONT_WEIGHT_OPTIONS }
-					onChange={ ( val ) =>
-						setAttributes( { titleFontWeight: val } )
-					}
+					label={__('Font weight', 'satori-manifest')}
+					value={titleFontWeight}
+					options={FONT_WEIGHT_OPTIONS}
+					onChange={(val) => setAttributes({ titleFontWeight: val })}
 				/>
 				<p className="satori-manifest-typo-label satori-manifest-typo-label--spaced">
-					{ __( 'List items', 'satori-manifest' ) }
+					{__('List items', 'satori-manifest')}
 				</p>
 				<SelectControl
-					label={ __( 'Font family', 'satori-manifest' ) }
-					value={ itemFontFamily }
-					options={ FONT_FAMILY_OPTIONS }
-					onChange={ ( val ) =>
-						setAttributes( { itemFontFamily: val } )
-					}
+					label={__('Font family', 'satori-manifest')}
+					value={itemFontFamily}
+					options={FONT_FAMILY_OPTIONS}
+					onChange={(val) => setAttributes({ itemFontFamily: val })}
 				/>
 				<RangeControl
-					label={ __( 'Font size (px)', 'satori-manifest' ) }
-					value={ itemFontSize || 0 }
-					onChange={ ( val ) =>
-						setAttributes( { itemFontSize: val ?? 0 } )
+					label={__('Font size (px)', 'satori-manifest')}
+					value={itemFontSize || 0}
+					onChange={(val) =>
+						setAttributes({ itemFontSize: val ?? 0 })
 					}
-					min={ 10 }
-					max={ 32 }
+					min={10}
+					max={32}
 					allowReset
-					resetFallbackValue={ 0 }
+					resetFallbackValue={0}
 				/>
 				<SelectControl
-					label={ __( 'Font weight', 'satori-manifest' ) }
-					value={ itemFontWeight }
-					options={ FONT_WEIGHT_OPTIONS }
-					onChange={ ( val ) =>
-						setAttributes( { itemFontWeight: val } )
-					}
+					label={__('Font weight', 'satori-manifest')}
+					value={itemFontWeight}
+					options={FONT_WEIGHT_OPTIONS}
+					onChange={(val) => setAttributes({ itemFontWeight: val })}
 				/>
 			</PanelBody>
 
 			<PanelBody
-				title={ __( 'Display', 'satori-manifest' ) }
-				initialOpen={ true }
+				title={__('Display', 'satori-manifest')}
+				initialOpen={true}
 			>
 				<ToggleControl
-					label={ __( 'Show background', 'satori-manifest' ) }
-					checked={ showBackground }
-					onChange={ ( value ) =>
-						setAttributes( { showBackground: value } )
+					label={__('Show background', 'satori-manifest')}
+					checked={showBackground}
+					onChange={(value) =>
+						setAttributes({ showBackground: value })
 					}
 				/>
 				<div className="satori-manifest-title-bg-control">
-					<label className="satori-manifest-title-bg-control__label">
-						{ __( 'Section title background', 'satori-manifest' ) }
+					<label
+						htmlFor="sm-title-bg-color"
+						className="satori-manifest-title-bg-control__label"
+					>
+						{__('Section title background', 'satori-manifest')}
 					</label>
 					<div className="satori-manifest-title-bg-control__actions">
 						<input
+							id="sm-title-bg-color"
 							type="color"
 							className="satori-manifest-title-bg-control__input"
-							value={ titleBgColor || '#ffffff' }
-							onChange={ ( e ) =>
-								setAttributes( { titleBgColor: e.target.value } )
+							value={titleBgColor || '#ffffff'}
+							onChange={(e) =>
+								setAttributes({ titleBgColor: e.target.value })
 							}
 						/>
-						{ titleBgColor && (
+						{titleBgColor && (
 							<Button
 								variant="tertiary"
 								size="small"
-								onClick={ () =>
-									setAttributes( { titleBgColor: '' } )
+								onClick={() =>
+									setAttributes({ titleBgColor: '' })
 								}
 							>
-								{ __( 'Remove', 'satori-manifest' ) }
+								{__('Remove', 'satori-manifest')}
 							</Button>
-						) }
+						)}
 					</div>
 				</div>
 				<ToggleControl
-					label={ __( 'Card padding', 'satori-manifest' ) }
-					checked={ cardPadding }
-					onChange={ ( value ) =>
-						setAttributes( { cardPadding: value } )
+					label={__('Card padding', 'satori-manifest')}
+					checked={cardPadding}
+					onChange={(value) => setAttributes({ cardPadding: value })}
+				/>
+				<ToggleControl
+					label={__('Section title padding', 'satori-manifest')}
+					checked={titlePadding}
+					onChange={(value) => setAttributes({ titlePadding: value })}
+				/>
+				<ToggleControl
+					label={__('Item underline', 'satori-manifest')}
+					checked={showItemBorder}
+					onChange={(value) =>
+						setAttributes({ showItemBorder: value })
 					}
 				/>
 				<ToggleControl
-					label={ __( 'Section title padding', 'satori-manifest' ) }
-					checked={ titlePadding }
-					onChange={ ( value ) =>
-						setAttributes( { titlePadding: value } )
-					}
+					label={__('Show prices', 'satori-manifest')}
+					checked={showPrices}
+					onChange={(value) => setAttributes({ showPrices: value })}
 				/>
 				<ToggleControl
-					label={ __( 'Item underline', 'satori-manifest' ) }
-					checked={ showItemBorder }
-					onChange={ ( value ) =>
-						setAttributes( { showItemBorder: value } )
-					}
-				/>
-				<ToggleControl
-					label={ __( 'Show prices', 'satori-manifest' ) }
-					checked={ showPrices }
-					onChange={ ( value ) =>
-						setAttributes( { showPrices: value } )
-					}
-				/>
-				<ToggleControl
-					label={ __( 'Show item descriptions', 'satori-manifest' ) }
-					checked={ showDescriptions }
-					onChange={ ( value ) =>
-						setAttributes( { showDescriptions: value } )
+					label={__('Show item descriptions', 'satori-manifest')}
+					checked={showDescriptions}
+					onChange={(value) =>
+						setAttributes({ showDescriptions: value })
 					}
 				/>
 				<TextControl
-					label={ __( 'Price prefix override', 'satori-manifest' ) }
-					help={ __(
+					label={__('Price prefix override', 'satori-manifest')}
+					help={__(
 						"Overrides the per-item prefix. Leave blank to use each item's own prefix.",
 						'satori-manifest'
-					) }
-					value={ pricePrefix }
-					onChange={ ( value ) =>
-						setAttributes( { pricePrefix: value } )
-					}
-					placeholder={ __( 'e.g. from', 'satori-manifest' ) }
+					)}
+					value={pricePrefix}
+					onChange={(value) => setAttributes({ pricePrefix: value })}
+					placeholder={__('e.g. from', 'satori-manifest')}
 				/>
 			</PanelBody>
 		</InspectorControls>

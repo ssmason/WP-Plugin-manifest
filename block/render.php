@@ -22,28 +22,38 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
+// render.php is a block render callback — variables here are scoped to this
+// include and are not true globals. WordPress deliberately injects $attributes
+// and $content into this scope; all other variables are local temporaries.
+
 // ── Read attributes ───────────────────────────────────────────────────────────
 
 $manifest_ids = isset( $attributes['manifestIds'] ) && is_array( $attributes['manifestIds'] )
 	? array_map( 'absint', $attributes['manifestIds'] )
 	: array();
 
-$layout                = isset( $attributes['layout'] )        ? sanitize_key( $attributes['layout'] )                           : 'single-column';
-$color_scheme          = isset( $attributes['colorScheme'] )   ? sanitize_key( $attributes['colorScheme'] )                      : 'default';
-$show_prices           = isset( $attributes['showPrices'] )    ? (bool) $attributes['showPrices']                                 : true;
-$show_descs            = isset( $attributes['showDescriptions'] ) ? (bool) $attributes['showDescriptions']                       : true;
-$price_prefix_override = isset( $attributes['pricePrefix'] )   ? sanitize_text_field( (string) $attributes['pricePrefix'] )      : '';
-$show_background       = isset( $attributes['showBackground'] ) ? (bool) $attributes['showBackground']                           : true;
-$title_bg_color        = isset( $attributes['titleBgColor'] )  ? sanitize_hex_color( (string) $attributes['titleBgColor'] )      : '';
-$title_font_size       = isset( $attributes['titleFontSize'] ) ? absint( $attributes['titleFontSize'] )                          : 0;
-$title_font_weight     = isset( $attributes['titleFontWeight'] ) ? sanitize_text_field( (string) $attributes['titleFontWeight'] ) : '';
-$title_font_family     = isset( $attributes['titleFontFamily'] ) ? sanitize_text_field( (string) $attributes['titleFontFamily'] ) : '';
-$item_font_size        = isset( $attributes['itemFontSize'] )  ? absint( $attributes['itemFontSize'] )                           : 0;
-$item_font_weight      = isset( $attributes['itemFontWeight'] ) ? sanitize_text_field( (string) $attributes['itemFontWeight'] )  : '';
-$item_font_family      = isset( $attributes['itemFontFamily'] ) ? sanitize_text_field( (string) $attributes['itemFontFamily'] )  : '';
-$card_padding          = isset( $attributes['cardPadding'] )    ? (bool) $attributes['cardPadding']                                : true;
-$title_padding         = isset( $attributes['titlePadding'] )   ? (bool) $attributes['titlePadding']                              : true;
-$show_item_border      = isset( $attributes['showItemBorder'] ) ? (bool) $attributes['showItemBorder']                            : true;
+$layout                = isset( $attributes['layout'] ) ? sanitize_key( $attributes['layout'] ) : 'single-column';
+$color_scheme          = isset( $attributes['colorScheme'] ) ? sanitize_key( $attributes['colorScheme'] ) : 'default';
+$show_prices           = isset( $attributes['showPrices'] ) ? (bool) $attributes['showPrices'] : true;
+$show_descs            = isset( $attributes['showDescriptions'] ) ? (bool) $attributes['showDescriptions'] : true;
+$price_prefix_override = isset( $attributes['pricePrefix'] ) ? sanitize_text_field( (string) $attributes['pricePrefix'] ) : '';
+$show_background       = isset( $attributes['showBackground'] ) ? (bool) $attributes['showBackground'] : true;
+$title_bg_color        = isset( $attributes['titleBgColor'] ) ? sanitize_hex_color( (string) $attributes['titleBgColor'] ) : '';
+$title_font_size       = isset( $attributes['titleFontSize'] ) ? absint( $attributes['titleFontSize'] ) : 0;
+// Font weight: allow only numeric weights (100–900) and CSS keywords.
+// Font family: allow only characters safe in a CSS value (letters, digits,
+// spaces, commas, hyphens, apostrophes). sanitize_text_field() does not strip
+// semicolons or colons, which could break out of the inline style attribute.
+$allowed_weights   = array( '100', '200', '300', '400', '500', '600', '700', '800', '900', 'normal', 'bold', 'lighter', 'bolder' );
+$title_font_weight = isset( $attributes['titleFontWeight'] ) && in_array( (string) $attributes['titleFontWeight'], $allowed_weights, true ) ? (string) $attributes['titleFontWeight'] : '';
+$title_font_family = isset( $attributes['titleFontFamily'] ) ? preg_replace( '/[^a-zA-Z0-9\s,\'\-]/', '', (string) $attributes['titleFontFamily'] ) : '';
+$item_font_size    = isset( $attributes['itemFontSize'] ) ? absint( $attributes['itemFontSize'] ) : 0;
+$item_font_weight  = isset( $attributes['itemFontWeight'] ) && in_array( (string) $attributes['itemFontWeight'], $allowed_weights, true ) ? (string) $attributes['itemFontWeight'] : '';
+$item_font_family  = isset( $attributes['itemFontFamily'] ) ? preg_replace( '/[^a-zA-Z0-9\s,\'\-]/', '', (string) $attributes['itemFontFamily'] ) : '';
+$card_padding      = isset( $attributes['cardPadding'] ) ? (bool) $attributes['cardPadding'] : true;
+$title_padding     = isset( $attributes['titlePadding'] ) ? (bool) $attributes['titlePadding'] : true;
+$show_item_border  = isset( $attributes['showItemBorder'] ) ? (bool) $attributes['showItemBorder'] : true;
 
 // ── Build wrapper class list ──────────────────────────────────────────────────
 
@@ -54,10 +64,10 @@ $wrapper_classes = implode(
 			'satori-manifest-price-list',
 			'is-layout-' . $layout,
 			'is-scheme-' . $color_scheme,
-			! $show_background  ? 'has-no-background'  : '',
-			$title_bg_color    ? 'has-title-bg'       : '',
-			! $card_padding    ? 'has-no-card-padding'   : '',
-			! $title_padding   ? 'has-no-title-padding' : '',
+			! $show_background ? 'has-no-background' : '',
+			$title_bg_color ? 'has-title-bg' : '',
+			! $card_padding ? 'has-no-card-padding' : '',
+			! $title_padding ? 'has-no-title-padding' : '',
 			! $show_item_border ? 'has-no-item-border' : '',
 		)
 	)
@@ -73,10 +83,10 @@ $wrapper_classes = implode(
 $inline_style = '';
 
 if ( 'custom' === $color_scheme ) {
-	$custom_bg     = isset( $attributes['customBgColor'] )     ? sanitize_hex_color( (string) $attributes['customBgColor'] )     : '';
+	$custom_bg     = isset( $attributes['customBgColor'] ) ? sanitize_hex_color( (string) $attributes['customBgColor'] ) : '';
 	$custom_accent = isset( $attributes['customAccentColor'] ) ? sanitize_hex_color( (string) $attributes['customAccentColor'] ) : '';
-	$custom_title  = isset( $attributes['customTitleColor'] )  ? sanitize_hex_color( (string) $attributes['customTitleColor'] )  : '';
-	$custom_card   = isset( $attributes['customCardColor'] )   ? sanitize_hex_color( (string) $attributes['customCardColor'] )   : '';
+	$custom_title  = isset( $attributes['customTitleColor'] ) ? sanitize_hex_color( (string) $attributes['customTitleColor'] ) : '';
+	$custom_card   = isset( $attributes['customCardColor'] ) ? sanitize_hex_color( (string) $attributes['customCardColor'] ) : '';
 
 	if ( $custom_bg ) {
 		$inline_style .= '--sm-custom-bg:' . $custom_bg . ';';
@@ -168,9 +178,15 @@ if ( empty( $manifest_ids ) ) {
 		),
 	);
 
+	$wrapper_attr_args = array( 'class' => $wrapper_classes );
+	if ( $inline_style ) {
+		$wrapper_attr_args['style'] = $inline_style;
+	}
+
 	ob_start();
 	?>
-	<div class="<?php echo esc_attr( $wrapper_classes ); ?>"<?php if ( $inline_style ) : ?> style="<?php echo esc_attr( $inline_style ); ?>"<?php endif; ?>>
+	<div <?php echo get_block_wrapper_attributes( $wrapper_attr_args ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_block_wrapper_attributes() returns pre-escaped HTML attributes. ?>>
+
 		<div class="satori-manifest-price-list__manifest">
 			<?php foreach ( $demo_sections as $demo_section ) : ?>
 				<div class="satori-manifest-price-list__section">
@@ -213,11 +229,16 @@ if ( empty( $manifest_ids ) ) {
 
 // ── Live render ───────────────────────────────────────────────────────────────
 
+$wrapper_attr_args = array( 'class' => $wrapper_classes );
+if ( $inline_style ) {
+	$wrapper_attr_args['style'] = $inline_style;
+}
 ?>
-<div class="<?php echo esc_attr( $wrapper_classes ); ?>"<?php if ( $inline_style ) : ?> style="<?php echo esc_attr( $inline_style ); ?>"<?php endif; ?>>
-	<?php foreach ( $manifest_ids as $post_id ) : ?>
+<div <?php echo get_block_wrapper_attributes( $wrapper_attr_args ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_block_wrapper_attributes() returns pre-escaped HTML attributes. ?>>
+
+	<?php foreach ( $manifest_ids as $manifest_post_id ) : ?>
 		<?php
-		$manifest = get_post( $post_id );
+		$manifest = get_post( $manifest_post_id );
 
 		if (
 			! $manifest instanceof \WP_Post
@@ -229,7 +250,7 @@ if ( empty( $manifest_ids ) ) {
 
 		// Section data is sanitized by Sanitizer::sanitize_sections() on save;
 		// no further sanitization is needed here before output.
-		$sections = \SatoriManifest\Manifest_Repository::get_sections( $post_id );
+		$sections = \SatoriManifest\Manifest_Repository::get_sections( $manifest_post_id );
 		?>
 		<div class="satori-manifest-price-list__manifest">
 			<?php foreach ( $sections as $section ) : ?>
@@ -252,9 +273,9 @@ if ( empty( $manifest_ids ) ) {
 						<ul class="satori-manifest-price-list__items">
 							<?php foreach ( $items as $item ) : ?>
 								<?php
-								$label        = isset( $item['label'] )       ? (string) $item['label']       : '';
+								$label        = isset( $item['label'] ) ? (string) $item['label'] : '';
 								$description  = isset( $item['description'] ) ? (string) $item['description'] : '';
-								$price_raw    = isset( $item['price'] )       ? trim( (string) $item['price'] ) : '';
+								$price_raw    = isset( $item['price'] ) ? trim( (string) $item['price'] ) : '';
 								$is_subheader = '' === $price_raw;
 								$price        = $is_subheader ? 0.0 : (float) $price_raw;
 								$prefix       = '' !== $price_prefix_override
@@ -265,7 +286,7 @@ if ( empty( $manifest_ids ) ) {
 									continue;
 								}
 								?>
-								<li class="satori-manifest-price-list__item<?php echo $is_subheader ? ' is-subsection-header' : ''; ?>">
+								<li class="satori-manifest-price-list__item<?php echo esc_attr( $is_subheader ? ' is-subsection-header' : '' ); ?>">
 									<div class="satori-manifest-price-list__item-label">
 										<span class="satori-manifest-price-list__item-name">
 											<?php echo esc_html( $label ); ?>

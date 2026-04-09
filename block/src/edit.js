@@ -6,7 +6,7 @@
  * Falls back to a placeholder when no manifests are selected, and shows
  * a spinner while the REST API resolves.
  *
- * @package SatoriManifest
+ * @package
  * @author  Stephen Mason <steve@satori-digital.com>
  * @since   1.0.0
  */
@@ -33,17 +33,47 @@ const DEMO_SECTIONS = [
 	{
 		title: 'Section Title',
 		items: [
-			{ label: 'Service Name', description: 'Optional description', price: '45.00', price_prefix: 'from' },
-			{ label: 'Service Name', description: '', price: '60.00', price_prefix: '' },
-			{ label: 'Service Name', description: 'Optional description', price: '25.00', price_prefix: 'from' },
+			{
+				label: 'Service Name',
+				description: 'Optional description',
+				price: '45.00',
+				price_prefix: 'from',
+			},
+			{
+				label: 'Service Name',
+				description: '',
+				price: '60.00',
+				price_prefix: '',
+			},
+			{
+				label: 'Service Name',
+				description: 'Optional description',
+				price: '25.00',
+				price_prefix: 'from',
+			},
 		],
 	},
 	{
 		title: 'Another Section',
 		items: [
-			{ label: 'Service Name', description: '', price: '35.00', price_prefix: '' },
-			{ label: 'Service Name', description: 'Optional description', price: '50.00', price_prefix: 'from' },
-			{ label: 'Service Name', description: '', price: '80.00', price_prefix: '' },
+			{
+				label: 'Service Name',
+				description: '',
+				price: '35.00',
+				price_prefix: '',
+			},
+			{
+				label: 'Service Name',
+				description: 'Optional description',
+				price: '50.00',
+				price_prefix: 'from',
+			},
+			{
+				label: 'Service Name',
+				description: '',
+				price: '80.00',
+				price_prefix: '',
+			},
 		],
 	},
 ];
@@ -67,7 +97,7 @@ const ENTITY_FIELDS = { _fields: 'id,title,meta' };
  * @param {Function} props.setAttributes Setter for block attributes.
  * @return {JSX.Element} The editor UI for this block.
  */
-export default function Edit( { attributes, setAttributes } ) {
+export default function Edit({ attributes, setAttributes }) {
 	const {
 		manifestIds,
 		layout,
@@ -94,46 +124,54 @@ export default function Edit( { attributes, setAttributes } ) {
 
 	const blockClasses = [
 		'satori-manifest-price-list',
-		`is-layout-${ layout }`,
-		`is-scheme-${ colorScheme }`,
-		! showBackground  ? 'has-no-background'   : '',
-		titleBgColor      ? 'has-title-bg'        : '',
-		! cardPadding     ? 'has-no-card-padding'   : '',
-		! titlePadding    ? 'has-no-title-padding'  : '',
-		! showItemBorder  ? 'has-no-item-border'   : '',
+		`is-layout-${layout}`,
+		`is-scheme-${colorScheme}`,
+		!showBackground ? 'has-no-background' : '',
+		titleBgColor ? 'has-title-bg' : '',
+		!cardPadding ? 'has-no-card-padding' : '',
+		!titlePadding ? 'has-no-title-padding' : '',
+		!showItemBorder ? 'has-no-item-border' : '',
 	]
-		.filter( Boolean )
-		.join( ' ' );
+		.filter(Boolean)
+		.join(' ');
 
 	const blockStyle = {
-		...( colorScheme === 'custom' && customBgColor     ? { '--sm-custom-bg':     customBgColor     } : {} ),
-		...( colorScheme === 'custom' && customAccentColor ? { '--sm-custom-accent': customAccentColor } : {} ),
-		...( colorScheme === 'custom' && customTitleColor  ? { '--sm-custom-title':  customTitleColor  } : {} ),
-		...( colorScheme === 'custom' && customCardColor   ? { '--sm-custom-card':   customCardColor   } : {} ),
-		...( titleBgColor    ? { '--sm-title-bg':      titleBgColor              } : {} ),
-		...( titleFontFamily ? { '--sm-title-font':    titleFontFamily           } : {} ),
-		...( titleFontSize   ? { '--sm-title-size':   `${ titleFontSize }px`    } : {} ),
-		...( titleFontWeight ? { '--sm-title-weight':  titleFontWeight          } : {} ),
-		...( itemFontFamily  ? { '--sm-item-font':     itemFontFamily           } : {} ),
-		...( itemFontSize    ? { '--sm-item-size':    `${ itemFontSize }px`     } : {} ),
-		...( itemFontWeight  ? { '--sm-item-weight':   itemFontWeight           } : {} ),
+		...(colorScheme === 'custom' && customBgColor
+			? { '--sm-custom-bg': customBgColor }
+			: {}),
+		...(colorScheme === 'custom' && customAccentColor
+			? { '--sm-custom-accent': customAccentColor }
+			: {}),
+		...(colorScheme === 'custom' && customTitleColor
+			? { '--sm-custom-title': customTitleColor }
+			: {}),
+		...(colorScheme === 'custom' && customCardColor
+			? { '--sm-custom-card': customCardColor }
+			: {}),
+		...(titleBgColor ? { '--sm-title-bg': titleBgColor } : {}),
+		...(titleFontFamily ? { '--sm-title-font': titleFontFamily } : {}),
+		...(titleFontSize ? { '--sm-title-size': `${titleFontSize}px` } : {}),
+		...(titleFontWeight ? { '--sm-title-weight': titleFontWeight } : {}),
+		...(itemFontFamily ? { '--sm-item-font': itemFontFamily } : {}),
+		...(itemFontSize ? { '--sm-item-size': `${itemFontSize}px` } : {}),
+		...(itemFontWeight ? { '--sm-item-weight': itemFontWeight } : {}),
 	};
 
-	const blockProps = useBlockProps( {
+	const blockProps = useBlockProps({
 		className: blockClasses,
 		style: blockStyle,
-	} );
+	});
 
 	// Fetch full manifest records including meta from the REST API.
 	const { manifests, isLoading } = useSelect(
-		( select ) => {
-			if ( ! manifestIds || manifestIds.length === 0 ) {
+		(select) => {
+			if (!manifestIds || manifestIds.length === 0) {
 				return { manifests: [], isLoading: false };
 			}
 
-			const store = select( 'core' );
+			const store = select('core');
 			const records = manifestIds
-				.map( ( id ) =>
+				.map((id) =>
 					store.getEntityRecord(
 						'postType',
 						'sm_manifest',
@@ -141,78 +179,85 @@ export default function Edit( { attributes, setAttributes } ) {
 						ENTITY_FIELDS
 					)
 				)
-				.filter( Boolean );
+				.filter(Boolean);
 
-			const isDone = manifestIds.every( ( id ) =>
-				store.hasFinishedResolution( 'getEntityRecord', [
+			const isDone = manifestIds.every((id) =>
+				store.hasFinishedResolution('getEntityRecord', [
 					'postType',
 					'sm_manifest',
 					id,
 					ENTITY_FIELDS,
-				] )
+				])
 			);
 
-			return { manifests: records, isLoading: ! isDone };
+			return { manifests: records, isLoading: !isDone };
 		},
-		[ manifestIds ]
+		[manifestIds]
 	);
 
 	// ── No selection — render styled demo so patterns preview looks correct ───
 
-	if ( ! manifestIds || manifestIds.length === 0 ) {
+	if (!manifestIds || manifestIds.length === 0) {
 		return (
 			<>
 				<Inspector
-					attributes={ attributes }
-					setAttributes={ setAttributes }
+					attributes={attributes}
+					setAttributes={setAttributes}
 				/>
-				<div { ...blockProps }>
+				<div {...blockProps}>
 					<div className="satori-manifest-price-list__demo-notice">
-						{ __(
+						{__(
 							'Select manifests in the sidebar to display live data.',
 							'satori-manifest'
-						) }
+						)}
 					</div>
 					<div className="satori-manifest-price-list__manifest">
-						{ DEMO_SECTIONS.map( ( section, si ) => (
+						{DEMO_SECTIONS.map((section, si) => (
 							<div
-								key={ si }
+								key={si}
 								className="satori-manifest-price-list__section"
 							>
 								<h3 className="satori-manifest-price-list__section-title">
-									{ section.title }
+									{section.title}
 								</h3>
 								<ul className="satori-manifest-price-list__items">
-									{ section.items.map( ( item, ii ) => (
+									{section.items.map((item, ii) => (
 										<li
-											key={ ii }
-											className={ `satori-manifest-price-list__item${ ! item.price || item.price.trim() === '' ? ' is-subsection-header' : '' }` }
+											key={ii}
+											className={`satori-manifest-price-list__item${!item.price || item.price.trim() === '' ? ' is-subsection-header' : ''}`}
 										>
 											<div className="satori-manifest-price-list__item-label">
 												<span className="satori-manifest-price-list__item-name">
-													{ item.label }
+													{item.label}
 												</span>
-												{ showDescriptions && item.description && (
-													<span className="satori-manifest-price-list__item-desc">
-														{ item.description }
-													</span>
-												) }
-											</div>
-											{ showPrices && item.price && item.price.trim() !== '' && (
-												<span className="satori-manifest-price-list__item-price">
-													{ item.price_prefix && (
-														<span className="satori-manifest-price-list__item-prefix">
-															{ item.price_prefix }{ ' ' }
+												{showDescriptions &&
+													item.description && (
+														<span className="satori-manifest-price-list__item-desc">
+															{item.description}
 														</span>
-													) }
-													{ formatPrice( item.price ) }
-												</span>
-											) }
+													)}
+											</div>
+											{showPrices &&
+												item.price &&
+												item.price.trim() !== '' && (
+													<span className="satori-manifest-price-list__item-price">
+														{item.price_prefix && (
+															<span className="satori-manifest-price-list__item-prefix">
+																{
+																	item.price_prefix
+																}{' '}
+															</span>
+														)}
+														{formatPrice(
+															item.price
+														)}
+													</span>
+												)}
 										</li>
-									) ) }
+									))}
 								</ul>
 							</div>
-						) ) }
+						))}
 					</div>
 				</div>
 			</>
@@ -221,14 +266,14 @@ export default function Edit( { attributes, setAttributes } ) {
 
 	// ── Loading state ──────────────────────────────────────────────────────────
 
-	if ( isLoading ) {
+	if (isLoading) {
 		return (
 			<>
 				<Inspector
-					attributes={ attributes }
-					setAttributes={ setAttributes }
+					attributes={attributes}
+					setAttributes={setAttributes}
 				/>
-				<div { ...blockProps }>
+				<div {...blockProps}>
 					<Spinner />
 				</div>
 			</>
@@ -239,44 +284,44 @@ export default function Edit( { attributes, setAttributes } ) {
 
 	return (
 		<>
-			<Inspector attributes={ attributes } setAttributes={ setAttributes } />
+			<Inspector attributes={attributes} setAttributes={setAttributes} />
 
-			<div { ...blockProps }>
-				{ manifests.map( ( manifest ) => {
+			<div {...blockProps}>
+				{manifests.map((manifest) => {
 					const sections = parseSections(
 						manifest.meta?._satori_manifest_sections
 					);
 
 					return (
 						<div
-							key={ manifest.id }
+							key={manifest.id}
 							className="satori-manifest-price-list__manifest"
 						>
-							{ sections.map( ( section, si ) => {
-								const items = Array.isArray( section.items )
+							{sections.map((section, si) => {
+								const items = Array.isArray(section.items)
 									? section.items
 									: [];
 
-								if ( ! section.title && items.length === 0 ) {
+								if (!section.title && items.length === 0) {
 									return null;
 								}
 
 								return (
 									<div
 										// Composite key: title + index guards against duplicate titles.
-										key={ `${ section.title }-${ si }` }
+										key={`${section.title}-${si}`}
 										className="satori-manifest-price-list__section"
 									>
-										{ section.title && (
+										{section.title && (
 											<h3 className="satori-manifest-price-list__section-title">
-												{ section.title }
+												{section.title}
 											</h3>
-										) }
+										)}
 
-										{ items.length > 0 && (
+										{items.length > 0 && (
 											<ul className="satori-manifest-price-list__items">
-												{ items.map( ( item, ii ) => {
-													if ( ! item.label ) {
+												{items.map((item, ii) => {
+													if (!item.label) {
 														return null;
 													}
 
@@ -287,51 +332,60 @@ export default function Edit( { attributes, setAttributes } ) {
 
 													return (
 														<li
-															key={ `${ item.label }-${ ii }` }
-															className={ `satori-manifest-price-list__item${ ! item.price || item.price.trim() === '' ? ' is-subsection-header' : '' }` }
+															key={`${item.label}-${ii}`}
+															className={`satori-manifest-price-list__item${!item.price || item.price.trim() === '' ? ' is-subsection-header' : ''}`}
 														>
 															<div className="satori-manifest-price-list__item-label">
 																<span className="satori-manifest-price-list__item-name">
-																	{ item.label }
+																	{item.label}
 																</span>
-																{ showDescriptions &&
+																{showDescriptions &&
 																	item.description && (
 																		<span className="satori-manifest-price-list__item-desc">
-																			{ item.description }
+																			{
+																				item.description
+																			}
 																		</span>
-																	) }
+																	)}
 															</div>
 
-															{ showPrices && item.price && item.price.trim() !== '' && (
-																<span className="satori-manifest-price-list__item-price">
-																	{ prefix && (
-																		<span className="satori-manifest-price-list__item-prefix">
-																			{ prefix }{ ' ' }
-																		</span>
-																	) }
-																	{ formatPrice( item.price ) }
-																</span>
-															) }
+															{showPrices &&
+																item.price &&
+																item.price.trim() !==
+																	'' && (
+																	<span className="satori-manifest-price-list__item-price">
+																		{prefix && (
+																			<span className="satori-manifest-price-list__item-prefix">
+																				{
+																					prefix
+																				}{' '}
+																			</span>
+																		)}
+																		{formatPrice(
+																			item.price
+																		)}
+																	</span>
+																)}
 														</li>
 													);
-												} ) }
+												})}
 											</ul>
-										) }
+										)}
 									</div>
 								);
-							} ) }
+							})}
 
-							{ sections.length === 0 && (
+							{sections.length === 0 && (
 								<p className="satori-manifest-price-list__empty">
-									{ __(
+									{__(
 										'This manifest has no sections yet. Edit it under Manifest → All Manifests.',
 										'satori-manifest'
-									) }
+									)}
 								</p>
-							) }
+							)}
 						</div>
 					);
-				} ) }
+				})}
 			</div>
 		</>
 	);
