@@ -252,10 +252,12 @@ if ( empty( $manifest_ids ) ) {
 						<ul class="satori-manifest-price-list__items">
 							<?php foreach ( $items as $item ) : ?>
 								<?php
-								$label       = isset( $item['label'] )        ? (string) $item['label']        : '';
-								$description = isset( $item['description'] )  ? (string) $item['description']  : '';
-								$price       = isset( $item['price'] )        ? (float) $item['price']          : 0.0;
-								$prefix      = '' !== $price_prefix_override
+								$label        = isset( $item['label'] )       ? (string) $item['label']       : '';
+								$description  = isset( $item['description'] ) ? (string) $item['description'] : '';
+								$price_raw    = isset( $item['price'] )       ? trim( (string) $item['price'] ) : '';
+								$is_subheader = '' === $price_raw;
+								$price        = $is_subheader ? 0.0 : (float) $price_raw;
+								$prefix       = '' !== $price_prefix_override
 									? $price_prefix_override
 									: ( isset( $item['price_prefix'] ) ? (string) $item['price_prefix'] : '' );
 
@@ -263,7 +265,7 @@ if ( empty( $manifest_ids ) ) {
 									continue;
 								}
 								?>
-								<li class="satori-manifest-price-list__item<?php echo 0.0 === $price ? ' is-subsection-header' : ''; ?>">
+								<li class="satori-manifest-price-list__item<?php echo $is_subheader ? ' is-subsection-header' : ''; ?>">
 									<div class="satori-manifest-price-list__item-label">
 										<span class="satori-manifest-price-list__item-name">
 											<?php echo esc_html( $label ); ?>
@@ -275,7 +277,7 @@ if ( empty( $manifest_ids ) ) {
 										<?php endif; ?>
 									</div>
 
-									<?php if ( $show_prices ) : ?>
+									<?php if ( $show_prices && ! $is_subheader ) : ?>
 										<span class="satori-manifest-price-list__item-price">
 											<?php if ( ! empty( $prefix ) ) : ?>
 												<span class="satori-manifest-price-list__item-prefix">

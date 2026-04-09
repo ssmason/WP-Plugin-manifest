@@ -186,7 +186,7 @@ export default function Edit( { attributes, setAttributes } ) {
 									{ section.items.map( ( item, ii ) => (
 										<li
 											key={ ii }
-											className={ `satori-manifest-price-list__item${ parseFloat( item.price ) === 0 ? ' is-subsection-header' : '' }` }
+											className={ `satori-manifest-price-list__item${ ! item.price || item.price.trim() === '' ? ' is-subsection-header' : '' }` }
 										>
 											<div className="satori-manifest-price-list__item-label">
 												<span className="satori-manifest-price-list__item-name">
@@ -198,7 +198,7 @@ export default function Edit( { attributes, setAttributes } ) {
 													</span>
 												) }
 											</div>
-											{ showPrices && (
+											{ showPrices && item.price && item.price.trim() !== '' && (
 												<span className="satori-manifest-price-list__item-price">
 													{ item.price_prefix && (
 														<span className="satori-manifest-price-list__item-prefix">
@@ -288,7 +288,7 @@ export default function Edit( { attributes, setAttributes } ) {
 													return (
 														<li
 															key={ `${ item.label }-${ ii }` }
-															className={ `satori-manifest-price-list__item${ parseFloat( item.price ) === 0 ? ' is-subsection-header' : '' }` }
+															className={ `satori-manifest-price-list__item${ ! item.price || item.price.trim() === '' ? ' is-subsection-header' : '' }` }
 														>
 															<div className="satori-manifest-price-list__item-label">
 																<span className="satori-manifest-price-list__item-name">
@@ -302,7 +302,7 @@ export default function Edit( { attributes, setAttributes } ) {
 																	) }
 															</div>
 
-															{ showPrices && (
+															{ showPrices && item.price && item.price.trim() !== '' && (
 																<span className="satori-manifest-price-list__item-price">
 																	{ prefix && (
 																		<span className="satori-manifest-price-list__item-prefix">

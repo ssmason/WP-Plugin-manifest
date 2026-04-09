@@ -85,7 +85,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 									<td><input type="text" class="satori-manifest-item__label" value="<?php echo esc_attr( $satori_manifest_item['label'] ?? '' ); ?>" placeholder="<?php esc_attr_e( 'Item name', 'satori-manifest' ); ?>" /></td>
 									<td><input type="text" class="satori-manifest-item__description" value="<?php echo esc_attr( $satori_manifest_item['description'] ?? '' ); ?>" placeholder="<?php esc_attr_e( 'Optional detail', 'satori-manifest' ); ?>" /></td>
 									<td><input type="text" class="satori-manifest-item__prefix" value="<?php echo esc_attr( $satori_manifest_item['price_prefix'] ?? '' ); ?>" placeholder="<?php esc_attr_e( 'from', 'satori-manifest' ); ?>" /></td>
-									<td><input type="number" step="0.01" min="0" class="satori-manifest-item__price" value="<?php echo esc_attr( $satori_manifest_item['price'] ?? '0.00' ); ?>" /></td>
+									<td><input type="number" step="0.01" min="0" class="satori-manifest-item__price" value="<?php echo esc_attr( $satori_manifest_item['price'] ?? '' ); ?>" placeholder="0.00" /></td>
 									<td><button type="button" class="button-link satori-manifest-item__remove" aria-label="<?php esc_attr_e( 'Remove item', 'satori-manifest' ); ?>">&times;</button></td>
 								</tr>
 							<?php endforeach; ?>
@@ -163,7 +163,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<td><input type="text" class="satori-manifest-item__label" value="" placeholder="<?php esc_attr_e( 'Item name', 'satori-manifest' ); ?>" /></td>
 		<td><input type="text" class="satori-manifest-item__description" value="" placeholder="<?php esc_attr_e( 'Optional detail', 'satori-manifest' ); ?>" /></td>
 		<td><input type="text" class="satori-manifest-item__prefix" value="" placeholder="<?php esc_attr_e( 'from', 'satori-manifest' ); ?>" /></td>
-		<td><input type="number" step="0.01" min="0" class="satori-manifest-item__price" value="0.00" /></td>
+		<td><input type="number" step="0.01" min="0" class="satori-manifest-item__price" value="" placeholder="0.00" /></td>
 		<td><button type="button" class="button-link satori-manifest-item__remove" aria-label="<?php esc_attr_e( 'Remove item', 'satori-manifest' ); ?>">&times;</button></td>
 	</tr>
 </template>

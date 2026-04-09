@@ -87,7 +87,7 @@ class Sanitizer {
 			$out[] = array(
 				'label'        => isset( $item['label'] ) ? sanitize_text_field( (string) $item['label'] ) : '',
 				'description'  => isset( $item['description'] ) ? sanitize_text_field( (string) $item['description'] ) : '',
-				'price'        => isset( $item['price'] ) ? number_format( (float) $item['price'], 2, '.', '' ) : '0.00',
+				'price'        => isset( $item['price'] ) && '' !== trim( (string) $item['price'] ) ? number_format( (float) $item['price'], 2, '.', '' ) : '',
 				'price_prefix' => isset( $item['price_prefix'] ) ? sanitize_text_field( (string) $item['price_prefix'] ) : '',
 				'sort_order'   => $idx,
 			);
