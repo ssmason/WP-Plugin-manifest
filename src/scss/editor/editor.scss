@@ -14,18 +14,18 @@
 
 .satori-manifest-price-list {
 	padding: 1em 0;
-}
 
-// Notice shown above demo content when no manifests are selected.
-.satori-manifest-price-list__demo-notice {
-	font-size: 11px;
-	color: #646970;
-	background: #f0f0f1;
-	border: 1px dashed #c3c4c7;
-	border-radius: 4px;
-	padding: 6px 10px;
-	margin-bottom: 12px;
-	text-align: center;
+	// Notice shown above demo content when no manifests are selected.
+	&__demo-notice {
+		font-size: 11px;
+		color: #646970;
+		background: #f0f0f1;
+		border: 1px dashed #c3c4c7;
+		border-radius: 4px;
+		padding: 6px 10px;
+		margin-bottom: 12px;
+		text-align: center;
+	}
 }
 
 // ─── Colour scheme swatch picker ─────────────────────────────────────────────
@@ -38,57 +38,63 @@
 	flex-wrap: wrap;
 	gap: 6px;
 	margin-top: 4px;
-}
 
-// Override WordPress Button component defaults that cause row overlap.
-.satori-manifest-scheme-option.components-button {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	gap: 4px;
-	padding: 4px;
-	min-height: 0;
-	height: auto;
-	border: 2px solid transparent;
-	border-radius: 6px;
-	background: none !important;
-	box-shadow: none !important;
-	cursor: pointer;
-	transition: border-color 0.15s ease;
-	min-width: 52px;
+	.satori-manifest-scheme-option {
+		&.components-button {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 4px;
+			padding: 4px;
+			min-height: 0;
+			height: auto;
+			border: 2px solid transparent;
+			border-radius: 6px;
+			background: none !important; // stylelint-disable-line declaration-no-important
+			box-shadow: none !important; // stylelint-disable-line declaration-no-important
+			cursor: pointer;
+			transition: border-color 0.15s ease;
+			min-width: 52px;
 
-	&:hover {
-		border-color: #007cba;
-		background: none !important;
-		box-shadow: none !important;
+			&:hover {
+				border-color: #007cba;
+				background: none !important; // stylelint-disable-line declaration-no-important
+				box-shadow: none !important; // stylelint-disable-line declaration-no-important
+			}
+
+			&:focus:not(:disabled) {
+				box-shadow: none !important; // stylelint-disable-line declaration-no-important
+				outline: 2px solid #007cba;
+				outline-offset: 2px;
+			}
+
+			&.is-active {
+				border-color: #007cba;
+			}
+		}
+
+		&__swatch {
+			display: block;
+			width: 36px;
+			height: 36px;
+			border-radius: 50%;
+			border: 2px solid;
+			flex-shrink: 0;
+
+			&--custom {
+				background: conic-gradient(#ff6b6b, #ffd93d, #6bcb77, #4d96ff, #ff6b6b);
+				border-color: #888;
+			}
+		}
+
+		&__label {
+			font-size: 10px;
+			line-height: 1.2;
+			text-align: center;
+			color: #1e1e1e;
+			white-space: nowrap;
+		}
 	}
-
-	&:focus:not(:disabled) {
-		box-shadow: none !important;
-		outline: 2px solid #007cba;
-		outline-offset: 2px;
-	}
-
-	&.is-active {
-		border-color: #007cba;
-	}
-}
-
-// Element selectors must be top-level — nesting inside the compound selector
-// above would generate .components-button__swatch which never matches.
-.satori-manifest-scheme-option__swatch {
-	display: block;
-	width: 36px;
-	height: 36px;
-	border-radius: 50%;
-	border: 2px solid;
-	flex-shrink: 0;
-}
-
-// Custom swatch shows a rainbow gradient to indicate "any colour".
-.satori-manifest-scheme-option__swatch--custom {
-	background: conic-gradient(#ff6b6b, #ffd93d, #6bcb77, #4d96ff, #ff6b6b);
-	border-color: #888;
 }
 
 // ─── Typography panel sub-headings ───────────────────────────────────────────
@@ -112,33 +118,35 @@
 	display: flex;
 	gap: 12px;
 	margin-top: 12px;
+
+	.satori-manifest-custom-color {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 4px;
+		flex: 1;
+
+		&__label {
+			font-size: 11px;
+			color: #1e1e1e;
+			align-self: flex-start;
+		}
+
+		&__input {
+			width: 100%;
+			height: 36px;
+			padding: 2px;
+			border: 1px solid #ddd;
+			border-radius: 4px;
+			cursor: pointer;
+			background: none;
+		}
+	}
 }
 
-.satori-manifest-custom-color {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	gap: 4px;
-	flex: 1;
-
-	&__label {
-		font-size: 11px;
-		color: #1e1e1e;
-		align-self: flex-start;
-	}
-
-	&__input {
-		width: 100%;
-		height: 36px;
-		padding: 2px;
-		border: 1px solid #ddd;
-		border-radius: 4px;
-		cursor: pointer;
-		background: none;
-	}
-}
-
+// ─── Section title background control ────────────────────────────────────────
 // Inline row: label left, small colour swatch + Remove button right.
+
 .satori-manifest-title-bg-control {
 	display: flex;
 	align-items: center;
@@ -169,12 +177,4 @@
 		background: none;
 		flex-shrink: 0;
 	}
-}
-
-.satori-manifest-scheme-option__label {
-	font-size: 10px;
-	line-height: 1.2;
-	text-align: center;
-	color: #1e1e1e;
-	white-space: nowrap;
 }

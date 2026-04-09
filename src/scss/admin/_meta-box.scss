@@ -11,7 +11,7 @@
 @use "sass:color";
 @use "variables" as *;
 
-// ─── Controls legend ─────────────────────────────────────────────────────────
+// ─── Controls legend (sidebar meta box) ──────────────────────────────────────
 
 .satori-manifest-legend {
 	margin-bottom: $sm-space-md;
@@ -56,220 +56,222 @@
 	}
 }
 
-// ─── Sections toolbar ────────────────────────────────────────────────────────
+// ─── Main meta box ────────────────────────────────────────────────────────────
 
 .satori-manifest-sections-toolbar {
 	margin-bottom: $sm-space-md;
 }
 
-// ─── Individual section ───────────────────────────────────────────────────────
-
 .satori-manifest-sections {
 	margin: 0;
 	padding: 0;
-}
 
-.satori-manifest-section {
-	background: #fff;
-	border: 1px solid $sm-color-border;
-	border-radius: $sm-radius;
-	margin-bottom: $sm-space-md;
+	// ─── Individual section ───────────────────────────────────────────────────
 
-	&:last-child {
-		margin-bottom: 0;
-	}
-
-	&__header {
-		display: flex;
-		align-items: center;
-		gap: $sm-space-sm;
-		padding: 8px 12px;
-		background: $sm-color-bg;
-		border-bottom: 1px solid $sm-color-border;
-	}
-
-	// Collapse / expand chevron button.
-	&__toggle {
-		flex-shrink: 0;
-		background: none;
-		border: none;
-		padding: 0;
-		cursor: pointer;
-		color: $sm-color-text-light;
-		display: flex;
-		align-items: center;
-
-		.dashicons {
-			transition: transform 0.2s ease;
-		}
-
-		// Rotate chevron when section is collapsed.
-		&[aria-expanded="false"] .dashicons {
-			transform: rotate(-90deg);
-		}
-
-		&:hover {
-			color: $sm-color-primary;
-		}
-	}
-
-	&__title-input {
-		flex: 1;
-		font-size: $sm-font-lg;
-		font-weight: 400;
-		margin: 0 35px 0 0;
-		border: 1px solid transparent;
-		background: transparent;
-		padding: $sm-space-xs $sm-space-sm;
+	.satori-manifest-section {
+		background: #fff;
+		border: 1px solid $sm-color-border;
 		border-radius: $sm-radius;
+		margin-bottom: $sm-space-md;
 
-		&:focus {
-			background: #fff;
-			border-color: $sm-color-primary;
-			box-shadow: 0 0 0 1px $sm-color-primary;
-			outline: none;
+		&:last-child {
+			margin-bottom: 0;
 		}
-	}
 
-	// Up / down reorder buttons stacked vertically.
-	&__order {
-		display: flex;
-		flex-direction: column;
-		gap: 0;
-		flex-shrink: 0;
-
-		button {
+		&__header {
 			display: flex;
 			align-items: center;
-			justify-content: center;
+			gap: $sm-space-sm;
+			padding: 8px 12px;
+			background: $sm-color-bg;
+			border-bottom: 1px solid $sm-color-border;
+		}
+
+		// Collapse / expand chevron button.
+		&__toggle {
+			flex-shrink: 0;
+			background: none;
+			border: none;
 			padding: 0;
-			line-height: 1;
+			cursor: pointer;
 			color: $sm-color-text-light;
-			text-decoration: none !important;
+			display: flex;
+			align-items: center;
+
+			.dashicons {
+				transition: transform 0.2s ease;
+			}
+
+			// Rotate chevron when section is collapsed.
+			&[aria-expanded="false"] .dashicons {
+				transform: rotate(-90deg);
+			}
 
 			&:hover {
 				color: $sm-color-primary;
-				text-decoration: none !important;
-			}
-
-			.dashicons {
-				font-size: 16px;
-				width: 16px;
-				height: 16px;
 			}
 		}
-	}
 
-	// × Remove button.
-	&__remove {
-		flex-shrink: 0;
-		position: relative;
-		text-decoration: none !important;
-		outline: none;
+		&__title-input {
+			flex: 1;
+			font-size: $sm-font-lg;
+			font-weight: 400;
+			margin: 0 35px 0 0;
+			border: 1px solid transparent;
+			background: transparent;
+			padding: $sm-space-xs $sm-space-sm;
+			border-radius: $sm-radius;
 
-		&:focus,
-		&:focus-visible {
-			outline: none !important; // stylelint-disable-line declaration-no-important
-			box-shadow: none !important; // stylelint-disable-line declaration-no-important
+			&:focus {
+				background: #fff;
+				border-color: $sm-color-primary;
+				box-shadow: 0 0 0 1px $sm-color-primary;
+				outline: none;
+			}
 		}
 
-		&:hover {
-			text-decoration: none !important;
-			opacity: 0.8;
+		// Up / down reorder buttons stacked vertically.
+		&__order {
+			display: flex;
+			flex-direction: column;
+			gap: 0;
+			flex-shrink: 0;
+
+			button {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				padding: 0;
+				line-height: 1;
+				color: $sm-color-text-light;
+				text-decoration: none !important; // stylelint-disable-line declaration-no-important
+
+				&:hover {
+					color: $sm-color-primary;
+					text-decoration: none !important; // stylelint-disable-line declaration-no-important
+				}
+
+				.dashicons {
+					font-size: 16px;
+					width: 16px;
+					height: 16px;
+				}
+			}
 		}
 
-		&.is-confirming::after {
-			content: 'Click again to confirm';
-			position: absolute;
-			right: 0;
-			top: calc(100% + 4px);
-			background: $sm-color-danger;
-			color: #fff;
-			font-size: 11px;
-			white-space: nowrap;
-			padding: 3px 8px;
-			border-radius: 3px;
-			z-index: 10;
-			pointer-events: none;
-		}
-	}
+		// Remove button.
+		&__remove {
+			flex-shrink: 0;
+			position: relative;
+			text-decoration: none !important; // stylelint-disable-line declaration-no-important
+			outline: none;
 
-	// Body — hidden when section is collapsed.
-	&__body {
-		&.is-collapsed {
-			display: none;
-		}
-	}
-}
+			&:focus,
+			&:focus-visible {
+				outline: none !important; // stylelint-disable-line declaration-no-important
+				box-shadow: none !important; // stylelint-disable-line declaration-no-important
+			}
 
-// ─── Items table ─────────────────────────────────────────────────────────────
+			&:hover {
+				text-decoration: none !important; // stylelint-disable-line declaration-no-important
+				opacity: 0.8;
+			}
 
-.satori-manifest-items {
-	margin: 0 !important;
-	border: none !important;
-
-	thead th {
-		font-size: $sm-font-sm;
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		color: $sm-color-text-light;
-	}
-
-	input[type="text"] {
-		width: 100%;
-		margin: 0;
-	}
-
-	input[type="number"] {
-		width: 90px;
-		margin: 0;
-	}
-
-	&__add-row {
-		margin: $sm-space-xs 0;
-	}
-}
-
-.satori-manifest-item {
-
-	// Actions cell — keep move and remove buttons on a single line.
-	td:last-child {
-		white-space: nowrap;
-		display: flex;
-		align-items: center;
-		gap: 4px;
-	}
-
-	&__move-up,
-	&__move-down {
-		color: $sm-color-text-light;
-		display: inline-flex;
-		align-items: center;
-		padding: 0;
-
-		&:hover {
-			color: $sm-color-primary;
+			&.is-confirming::after {
+				content: 'Click again to confirm';
+				position: absolute;
+				right: 0;
+				top: calc(100% + 4px);
+				background: $sm-color-danger;
+				color: #fff;
+				font-size: 11px;
+				white-space: nowrap;
+				padding: 3px 8px;
+				border-radius: 3px;
+				z-index: 10;
+				pointer-events: none;
+			}
 		}
 
-		.dashicons {
-			font-size: 16px;
-			width: 16px;
-			height: 16px;
-		}
-	}
+		// Body — hidden when section is collapsed.
+		&__body {
+			&.is-collapsed {
+				display: none;
+			}
 
-	&__remove {
-		line-height: 1;
-		outline: none;
+			// ─── Items table ──────────────────────────────────────────────────
 
-		&:focus,
-		&:focus-visible {
-			outline: none !important; // stylelint-disable-line declaration-no-important
-			box-shadow: none !important; // stylelint-disable-line declaration-no-important
-		}
+			.satori-manifest-items {
+				margin: 0 !important; // stylelint-disable-line declaration-no-important
+				border: none !important; // stylelint-disable-line declaration-no-important
 
-		&:hover {
-			opacity: 0.8;
+				thead th {
+					font-size: $sm-font-sm;
+					text-transform: uppercase;
+					letter-spacing: 0.05em;
+					color: $sm-color-text-light;
+				}
+
+				input[type="text"] {
+					width: 100%;
+					margin: 0;
+				}
+
+				input[type="number"] {
+					width: 90px;
+					margin: 0;
+				}
+
+				&__add-row {
+					margin: $sm-space-xs 0;
+				}
+
+				// ─── Individual item row ──────────────────────────────────────
+
+				.satori-manifest-item {
+
+					// Actions cell — keep move and remove buttons on a single line.
+					td:last-child {
+						white-space: nowrap;
+						display: flex;
+						align-items: center;
+						gap: 4px;
+					}
+
+					&__move-up,
+					&__move-down {
+						color: $sm-color-text-light;
+						display: inline-flex;
+						align-items: center;
+						padding: 0;
+
+						&:hover {
+							color: $sm-color-primary;
+						}
+
+						.dashicons {
+							font-size: 16px;
+							width: 16px;
+							height: 16px;
+						}
+					}
+
+					&__remove {
+						line-height: 1;
+						outline: none;
+
+						&:focus,
+						&:focus-visible {
+							outline: none !important; // stylelint-disable-line declaration-no-important
+							box-shadow: none !important; // stylelint-disable-line declaration-no-important
+						}
+
+						&:hover {
+							opacity: 0.8;
+						}
+					}
+				}
+			}
 		}
 	}
 }
