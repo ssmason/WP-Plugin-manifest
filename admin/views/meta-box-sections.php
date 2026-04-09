@@ -65,7 +65,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						type="button"
 						class="button-link satori-manifest-section__remove"
 						aria-label="<?php esc_attr_e( 'Remove section', 'satori-manifest' ); ?>"
-					><svg width="16" height="16" viewBox="0 0 1024 1024" fill="#f70202" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M512 897.6c-108 0-209.6-42.4-285.6-118.4-76-76-118.4-177.6-118.4-285.6 0-108 42.4-209.6 118.4-285.6 76-76 177.6-118.4 285.6-118.4 108 0 209.6 42.4 285.6 118.4 157.6 157.6 157.6 413.6 0 571.2-76 76-177.6 118.4-285.6 118.4z m0-760c-95.2 0-184.8 36.8-252 104-67.2 67.2-104 156.8-104 252s36.8 184.8 104 252c67.2 67.2 156.8 104 252 104 95.2 0 184.8-36.8 252-104 139.2-139.2 139.2-364.8 0-504-67.2-67.2-156.8-104-252-104z"/><path d="M707.872 329.392L348.096 689.16l-31.68-31.68 359.776-359.768z"/><path d="M328 340.8l32-31.2 348 348-32 32z"/></svg></button>
+					><svg width="25" height="25" viewBox="0 0 1024 1024" fill="#f70202" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M512 897.6c-108 0-209.6-42.4-285.6-118.4-76-76-118.4-177.6-118.4-285.6 0-108 42.4-209.6 118.4-285.6 76-76 177.6-118.4 285.6-118.4 108 0 209.6 42.4 285.6 118.4 157.6 157.6 157.6 413.6 0 571.2-76 76-177.6 118.4-285.6 118.4z m0-760c-95.2 0-184.8 36.8-252 104-67.2 67.2-104 156.8-104 252s36.8 184.8 104 252c67.2 67.2 156.8 104 252 104 95.2 0 184.8-36.8 252-104 139.2-139.2 139.2-364.8 0-504-67.2-67.2-156.8-104-252-104z"/><path d="M707.872 329.392L348.096 689.16l-31.68-31.68 359.776-359.768z"/><path d="M328 340.8l32-31.2 348 348-32 32z"/></svg></button>
 				</div>
 
 				<div class="satori-manifest-section__body is-collapsed">
@@ -137,7 +137,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<span class="dashicons dashicons-arrow-down-alt2"></span>
 				</button>
 			</div>
-			<button type="button" class="button-link satori-manifest-section__remove" aria-label="<?php esc_attr_e( 'Remove section', 'satori-manifest' ); ?>"><svg width="16" height="16" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M154 260h568v700H154z" fill="#FF3B30"/><path d="M624.428 261.076v485.956c0 57.379-46.737 103.894-104.391 103.894h-362.56v107.246h566.815V261.076h-99.864z" fill="#030504"/><path d="M633.596 235.166l-228.054-71.773 31.55-99.3 228.055 71.773z" fill="#FF3B30"/><path d="M847.401 324.783c-2.223 0-4.475-.333-6.706-1.034L185.038 117.401c-11.765-3.703-18.298-16.239-14.592-27.996 3.706-11.766 16.241-18.288 27.993-14.595l655.656 206.346c11.766 3.703 18.298 16.239 14.592 27.996-2.995 9.531-11.795 15.631-21.286 15.631z" fill="#FF3B30"/></svg></button>
+			<button type="button" class="button-link satori-manifest-section__remove" aria-label="<?php esc_attr_e( 'Remove section', 'satori-manifest' ); ?>"><svg width="25" height="25" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M154 260h568v700H154z" fill="#FF3B30"/><path d="M624.428 261.076v485.956c0 57.379-46.737 103.894-104.391 103.894h-362.56v107.246h566.815V261.076h-99.864z" fill="#030504"/><path d="M633.596 235.166l-228.054-71.773 31.55-99.3 228.055 71.773z" fill="#FF3B30"/><path d="M847.401 324.783c-2.223 0-4.475-.333-6.706-1.034L185.038 117.401c-11.765-3.703-18.298-16.239-14.592-27.996 3.706-11.766 16.241-18.288 27.993-14.595l655.656 206.346c11.766 3.703 18.298 16.239 14.592 27.996-2.995 9.531-11.795 15.631-21.286 15.631z" fill="#FF3B30"/></svg></button>
 		</div>
 		<div class="satori-manifest-section__body">
 			<table class="satori-manifest-items wp-list-table widefat striped">
