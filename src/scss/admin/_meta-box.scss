@@ -151,7 +151,7 @@
 
 	input[type="text"],
 	input[type="number"] {
-		width: 100%;
+		width: 50%;
 		margin: 0;
 	}
 
@@ -161,6 +161,32 @@
 }
 
 .satori-manifest-item {
+
+	// Actions cell — keep move and remove buttons on a single line.
+	td:last-child {
+		white-space: nowrap;
+		display: flex;
+		align-items: center;
+		gap: 4px;
+	}
+
+	&__move-up,
+	&__move-down {
+		color: $sm-color-text-light;
+		display: inline-flex;
+		align-items: center;
+		padding: 0;
+
+		&:hover {
+			color: $sm-color-primary;
+		}
+
+		.dashicons {
+			font-size: 16px;
+			width: 16px;
+			height: 16px;
+		}
+	}
 
 	&__remove {
 		color: $sm-color-danger;
