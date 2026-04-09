@@ -11,6 +11,55 @@
 @use "sass:color";
 @use "variables" as *;
 
+// ─── Controls legend ─────────────────────────────────────────────────────────
+
+.satori-manifest-legend {
+	margin-bottom: $sm-space-md;
+	border: 1px solid $sm-color-border;
+	border-radius: $sm-radius;
+	background: $sm-color-bg;
+
+	summary {
+		padding: $sm-space-xs $sm-space-sm;
+		font-size: $sm-font-sm;
+		font-weight: 600;
+		color: $sm-color-text-light;
+		cursor: pointer;
+		user-select: none;
+
+		&:hover {
+			color: $sm-color-primary;
+		}
+	}
+
+	&__list {
+		margin: 0;
+		padding: $sm-space-xs $sm-space-sm $sm-space-sm;
+		list-style: none;
+		border-top: 1px solid $sm-color-border;
+
+		li {
+			display: flex;
+			align-items: center;
+			gap: 6px;
+			font-size: $sm-font-sm;
+			color: $sm-color-text-light;
+			padding: 3px 0;
+		}
+
+		.dashicons {
+			font-size: 14px;
+			width: 14px;
+			height: 14px;
+			flex-shrink: 0;
+		}
+
+		svg {
+			flex-shrink: 0;
+		}
+	}
+}
+
 // ─── Sections toolbar ────────────────────────────────────────────────────────
 
 .satori-manifest-sections-toolbar {
