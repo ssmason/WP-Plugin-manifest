@@ -118,13 +118,27 @@
 	// × Remove button.
 	&__remove {
 		flex-shrink: 0;
-		color: $sm-color-text-light;
-		font-size: $sm-font-sm;
+		position: relative;
 		text-decoration: none !important;
 
 		&:hover {
-			color: $sm-color-danger;
 			text-decoration: none !important;
+			opacity: 0.8;
+		}
+
+		&.is-confirming::after {
+			content: 'Click again to confirm';
+			position: absolute;
+			right: 0;
+			top: calc(100% + 4px);
+			background: $sm-color-danger;
+			color: #fff;
+			font-size: 11px;
+			white-space: nowrap;
+			padding: 3px 8px;
+			border-radius: 3px;
+			z-index: 10;
+			pointer-events: none;
 		}
 	}
 

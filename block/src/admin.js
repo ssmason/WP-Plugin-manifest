@@ -151,15 +151,14 @@
 		}
 
 		// First click — enter confirming state.
-		const originalHTML = btn.innerHTML;
 		btn.dataset.confirming = '1';
-		btn.textContent = 'Sure? Click again to remove';
+		btn.classList.add( 'is-confirming' );
 
 		setTimeout( () => {
 			// Auto-reset if the user does not confirm within 3 seconds.
 			if ( btn.isConnected ) {
 				delete btn.dataset.confirming;
-				btn.innerHTML = originalHTML;
+				btn.classList.remove( 'is-confirming' );
 			}
 		}, 3000 );
 	}
