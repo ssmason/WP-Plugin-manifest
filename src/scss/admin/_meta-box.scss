@@ -213,12 +213,17 @@
 	}
 
 	&__remove {
-		color: $sm-color-danger;
-		font-size: 18px;
 		line-height: 1;
+		outline: none;
+
+		&:focus,
+		&:focus-visible {
+			outline: none !important; // stylelint-disable-line declaration-no-important
+			box-shadow: none !important; // stylelint-disable-line declaration-no-important
+		}
 
 		&:hover {
-			color: color.scale($sm-color-danger, $lightness: -20%);
+			opacity: 0.8;
 		}
 	}
 }
