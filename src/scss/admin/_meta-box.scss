@@ -121,6 +121,12 @@
 		text-decoration: none !important;
 		outline: none;
 
+		&:focus,
+		&:focus-visible {
+			outline: none;
+			box-shadow: none;
+		}
+
 		&:hover {
 			text-decoration: none !important;
 			opacity: 0.8;
