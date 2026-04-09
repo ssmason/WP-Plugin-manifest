@@ -48,7 +48,7 @@ $sm-fe-radius:   6px;
 // ─── Base section ─────────────────────────────────────────────────────────────
 
 .satori-manifest-price-list__section {
-	margin-bottom: $sm-fe-space-sm;
+	margin-bottom: $sm-fe-space-lg;
 	border-radius: $sm-fe-radius;
 
 	&:last-child {
@@ -131,7 +131,8 @@ $sm-fe-radius:   6px;
 	.satori-manifest-price-list__manifest {
 		display: grid;
 		grid-template-columns: repeat(2, 1fr);
-		gap: $sm-fe-space-lg;
+		row-gap: 10px;
+		column-gap: $sm-fe-space-lg;
 		align-items: start;
 	}
 }
@@ -146,7 +147,8 @@ $sm-fe-radius:   6px;
 	.satori-manifest-price-list__manifest {
 		display: grid;
 		grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-		gap: $sm-fe-space-lg;
+		row-gap: 10px;
+		column-gap: $sm-fe-space-lg;
 		align-items: start;
 	}
 
