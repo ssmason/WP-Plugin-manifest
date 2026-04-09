@@ -1,5 +1,10 @@
 /.git
 /.gitignore
+/.wp-env.json
+/phpunit.xml
+/tests
+/cypress
+/cypress.config.js
 /.distignore
 /.claude
 /.phpcs.xml
