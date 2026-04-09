@@ -54,7 +54,7 @@
 				label:        row.querySelector( '.satori-manifest-item__label' )?.value        ?? '',
 				description:  row.querySelector( '.satori-manifest-item__description' )?.value  ?? '',
 				price_prefix: row.querySelector( '.satori-manifest-item__prefix' )?.value       ?? '',
-				price:        row.querySelector( '.satori-manifest-item__price' )?.value        ?? '0.00',
+				price:        row.querySelector( '.satori-manifest-item__price' )?.value        ?? '',
 				sort_order:   idx,
 			} )
 		);

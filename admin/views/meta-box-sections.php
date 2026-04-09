@@ -85,7 +85,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 									<td><input type="text" class="satori-manifest-item__label" value="<?php echo esc_attr( $satori_manifest_item['label'] ?? '' ); ?>" placeholder="<?php esc_attr_e( 'Item name', 'satori-manifest' ); ?>" /></td>
 									<td><input type="text" class="satori-manifest-item__description" value="<?php echo esc_attr( $satori_manifest_item['description'] ?? '' ); ?>" placeholder="<?php esc_attr_e( 'Optional detail', 'satori-manifest' ); ?>" /></td>
 									<td><input type="text" class="satori-manifest-item__prefix" value="<?php echo esc_attr( $satori_manifest_item['price_prefix'] ?? '' ); ?>" placeholder="<?php esc_attr_e( 'from', 'satori-manifest' ); ?>" /></td>
-									<td><input type="number" step="0.01" min="0" class="satori-manifest-item__price" value="<?php echo esc_attr( $satori_manifest_item['price'] ?? '' ); ?>" placeholder="0.00" /></td>
+									<?php $satori_manifest_price_val = ( isset( $satori_manifest_item['price'] ) && '0.00' !== $satori_manifest_item['price'] ) ? $satori_manifest_item['price'] : ''; ?>
+									<td><input type="number" step="0.01" min="0" class="satori-manifest-item__price" value="<?php echo esc_attr( $satori_manifest_price_val ); ?>" placeholder="0.00" /></td>
 									<td><button type="button" class="button-link satori-manifest-item__remove" aria-label="<?php esc_attr_e( 'Remove item', 'satori-manifest' ); ?>">&times;</button></td>
 								</tr>
 							<?php endforeach; ?>
