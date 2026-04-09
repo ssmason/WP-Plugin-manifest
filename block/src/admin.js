@@ -229,6 +229,36 @@
 		}
 	}
 
+	// ── Move item up / down ────────────────────────────────────────────────────
+
+	/**
+	 * Moves an item row one position up in its tbody.
+	 *
+	 * @param {Element} rowEl  The <tr> element.
+	 * @return {void}
+	 */
+	function moveItemUp( rowEl ) {
+		const prev = rowEl.previousElementSibling;
+		if ( prev ) {
+			rowEl.parentNode.insertBefore( rowEl, prev );
+			serialise();
+		}
+	}
+
+	/**
+	 * Moves an item row one position down in its tbody.
+	 *
+	 * @param {Element} rowEl  The <tr> element.
+	 * @return {void}
+	 */
+	function moveItemDown( rowEl ) {
+		const next = rowEl.nextElementSibling;
+		if ( next ) {
+			rowEl.parentNode.insertBefore( next, rowEl );
+			serialise();
+		}
+	}
+
 	// ── Toggle section body ────────────────────────────────────────────────────
 
 	/**
@@ -296,6 +326,26 @@
 			const row = removeItemBtn.closest( '.satori-manifest-item' );
 			if ( row ) {
 				removeItem( row );
+			}
+			return;
+		}
+
+		// Move item up.
+		const moveItemUpBtn = target.closest( '.satori-manifest-item__move-up' );
+		if ( moveItemUpBtn ) {
+			const row = moveItemUpBtn.closest( '.satori-manifest-item' );
+			if ( row ) {
+				moveItemUp( row );
+			}
+			return;
+		}
+
+		// Move item down.
+		const moveItemDownBtn = target.closest( '.satori-manifest-item__move-down' );
+		if ( moveItemDownBtn ) {
+			const row = moveItemDownBtn.closest( '.satori-manifest-item' );
+			if ( row ) {
+				moveItemDown( row );
 			}
 			return;
 		}
