@@ -355,7 +355,7 @@ $sm-fe-radius:   6px;
 // Applied when titlePadding is false. Removes the padding applied by has-title-bg
 // on the section title heading.
 
-.satori-manifest-price-list.has-title-bg.has-no-title-padding {
+.satori-manifest-price-list.has-no-title-padding {
 
 	.satori-manifest-price-list__section-title {
 		padding: 0 !important; // stylelint-disable-line declaration-no-important
