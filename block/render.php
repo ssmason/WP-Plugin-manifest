@@ -41,6 +41,8 @@ $title_font_family     = isset( $attributes['titleFontFamily'] ) ? sanitize_text
 $item_font_size        = isset( $attributes['itemFontSize'] )  ? absint( $attributes['itemFontSize'] )                           : 0;
 $item_font_weight      = isset( $attributes['itemFontWeight'] ) ? sanitize_text_field( (string) $attributes['itemFontWeight'] )  : '';
 $item_font_family      = isset( $attributes['itemFontFamily'] ) ? sanitize_text_field( (string) $attributes['itemFontFamily'] )  : '';
+$card_padding          = isset( $attributes['cardPadding'] )    ? (bool) $attributes['cardPadding']                                : true;
+$show_item_border      = isset( $attributes['showItemBorder'] ) ? (bool) $attributes['showItemBorder']                            : true;
 
 // ── Build wrapper class list ──────────────────────────────────────────────────
 
@@ -51,8 +53,10 @@ $wrapper_classes = implode(
 			'satori-manifest-price-list',
 			'is-layout-' . $layout,
 			'is-scheme-' . $color_scheme,
-			! $show_background ? 'has-no-background' : '',
-			$title_bg_color    ? 'has-title-bg'      : '',
+			! $show_background  ? 'has-no-background'  : '',
+			$title_bg_color    ? 'has-title-bg'       : '',
+			! $card_padding    ? 'has-no-card-padding' : '',
+			! $show_item_border ? 'has-no-item-border' : '',
 		)
 	)
 );
@@ -70,6 +74,7 @@ if ( 'custom' === $color_scheme ) {
 	$custom_bg     = isset( $attributes['customBgColor'] )     ? sanitize_hex_color( (string) $attributes['customBgColor'] )     : '';
 	$custom_accent = isset( $attributes['customAccentColor'] ) ? sanitize_hex_color( (string) $attributes['customAccentColor'] ) : '';
 	$custom_title  = isset( $attributes['customTitleColor'] )  ? sanitize_hex_color( (string) $attributes['customTitleColor'] )  : '';
+	$custom_card   = isset( $attributes['customCardColor'] )   ? sanitize_hex_color( (string) $attributes['customCardColor'] )   : '';
 
 	if ( $custom_bg ) {
 		$inline_style .= '--sm-custom-bg:' . $custom_bg . ';';
@@ -79,6 +84,9 @@ if ( 'custom' === $color_scheme ) {
 	}
 	if ( $custom_title ) {
 		$inline_style .= '--sm-custom-title:' . $custom_title . ';';
+	}
+	if ( $custom_card ) {
+		$inline_style .= '--sm-custom-card:' . $custom_card . ';';
 	}
 }
 

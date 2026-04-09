@@ -339,6 +339,28 @@ $sm-fe-radius:   6px;
 	padding: 0 !important; // stylelint-disable-line declaration-no-important
 }
 
+// ─── Modifier: no card padding ───────────────────────────────────────────────
+// Applied when cardPadding is false. Removes padding from section containers
+// regardless of colour scheme.
+
+.satori-manifest-price-list.has-no-card-padding {
+
+	.satori-manifest-price-list__section {
+		padding: 0 !important; // stylelint-disable-line declaration-no-important
+	}
+}
+
+// ─── Modifier: no item border ─────────────────────────────────────────────────
+// Applied when showItemBorder is false. Removes border-bottom underlines from
+// list items regardless of colour scheme.
+
+.satori-manifest-price-list.has-no-item-border {
+
+	.satori-manifest-price-list__item {
+		border-bottom: none !important; // stylelint-disable-line declaration-no-important
+	}
+}
+
 // ─── Modifier: section title background ──────────────────────────────────────
 // Applied when titleBgColor is set. Colours the section heading pill and
 // adjusts spacing so the border-bottom is replaced by the background block.
@@ -364,7 +386,7 @@ $sm-fe-radius:   6px;
 	padding: $sm-fe-space-lg;
 
 	.satori-manifest-price-list__section {
-		background: rgba(255, 255, 255, 0.2);
+		background: var(--sm-custom-card, rgba(255, 255, 255, 0.2));
 		padding: $sm-fe-space-md;
 	}
 

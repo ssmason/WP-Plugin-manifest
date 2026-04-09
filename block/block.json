@@ -62,9 +62,24 @@
 			"description": "Custom scheme section title colour (hex). Falls back to customAccentColor when empty.",
 			"default": ""
 		},
+		"customCardColor": {
+			"type": "string",
+			"description": "Custom scheme section/card background colour (hex). Falls back to a semi-transparent white when empty.",
+			"default": ""
+		},
 		"showBackground": {
 			"type": "boolean",
 			"description": "Whether to render the scheme background colour on the wrapper.",
+			"default": true
+		},
+		"cardPadding": {
+			"type": "boolean",
+			"description": "Whether to apply padding inside each section card.",
+			"default": true
+		},
+		"showItemBorder": {
+			"type": "boolean",
+			"description": "Whether to show the border-bottom underline on each list item.",
 			"default": true
 		},
 		"titleBgColor": {

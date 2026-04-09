@@ -143,7 +143,10 @@ export default function Inspector( { attributes, setAttributes } ) {
 		customBgColor,
 		customAccentColor,
 		customTitleColor,
+		customCardColor,
 		showBackground,
+		cardPadding,
+		showItemBorder,
 		titleBgColor,
 		titleFontSize,
 		titleFontWeight,
@@ -306,6 +309,19 @@ export default function Inspector( { attributes, setAttributes } ) {
 								}
 							/>
 						</div>
+						<div className="satori-manifest-custom-color">
+							<label className="satori-manifest-custom-color__label">
+								{ __( 'Card', 'satori-manifest' ) }
+							</label>
+							<input
+								type="color"
+								className="satori-manifest-custom-color__input"
+								value={ customCardColor || '#ffffff' }
+								onChange={ ( e ) =>
+									setAttributes( { customCardColor: e.target.value } )
+								}
+							/>
+						</div>
 					</div>
 				) }
 			</PanelBody>
@@ -413,6 +429,20 @@ export default function Inspector( { attributes, setAttributes } ) {
 						) }
 					</div>
 				</div>
+				<ToggleControl
+					label={ __( 'Card padding', 'satori-manifest' ) }
+					checked={ cardPadding }
+					onChange={ ( value ) =>
+						setAttributes( { cardPadding: value } )
+					}
+				/>
+				<ToggleControl
+					label={ __( 'Item underline', 'satori-manifest' ) }
+					checked={ showItemBorder }
+					onChange={ ( value ) =>
+						setAttributes( { showItemBorder: value } )
+					}
+				/>
 				<ToggleControl
 					label={ __( 'Show prices', 'satori-manifest' ) }
 					checked={ showPrices }

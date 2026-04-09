@@ -78,7 +78,10 @@ export default function Edit( { attributes, setAttributes } ) {
 		customBgColor,
 		customAccentColor,
 		customTitleColor,
+		customCardColor,
 		showBackground,
+		cardPadding,
+		showItemBorder,
 		titleBgColor,
 		titleFontSize,
 		titleFontWeight,
@@ -92,8 +95,10 @@ export default function Edit( { attributes, setAttributes } ) {
 		'satori-manifest-price-list',
 		`is-layout-${ layout }`,
 		`is-scheme-${ colorScheme }`,
-		! showBackground ? 'has-no-background' : '',
-		titleBgColor     ? 'has-title-bg'      : '',
+		! showBackground  ? 'has-no-background'   : '',
+		titleBgColor      ? 'has-title-bg'        : '',
+		! cardPadding     ? 'has-no-card-padding'  : '',
+		! showItemBorder  ? 'has-no-item-border'   : '',
 	]
 		.filter( Boolean )
 		.join( ' ' );
@@ -102,6 +107,7 @@ export default function Edit( { attributes, setAttributes } ) {
 		...( colorScheme === 'custom' && customBgColor     ? { '--sm-custom-bg':     customBgColor     } : {} ),
 		...( colorScheme === 'custom' && customAccentColor ? { '--sm-custom-accent': customAccentColor } : {} ),
 		...( colorScheme === 'custom' && customTitleColor  ? { '--sm-custom-title':  customTitleColor  } : {} ),
+		...( colorScheme === 'custom' && customCardColor   ? { '--sm-custom-card':   customCardColor   } : {} ),
 		...( titleBgColor    ? { '--sm-title-bg':      titleBgColor              } : {} ),
 		...( titleFontFamily ? { '--sm-title-font':    titleFontFamily           } : {} ),
 		...( titleFontSize   ? { '--sm-title-size':   `${ titleFontSize }px`    } : {} ),
