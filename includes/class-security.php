@@ -81,5 +81,4 @@ class Security {
 	public static function verify_form_nonce( string $nonce, string $action ): bool {
 		return (bool) wp_verify_nonce( $nonce, self::NONCE_PREFIX . $action );
 	}
-
 }

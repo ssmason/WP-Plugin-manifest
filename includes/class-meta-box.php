@@ -81,17 +81,10 @@ class Meta_Box {
 	}
 
 	/**
-	 * Renders the meta box HTML.
-	 *
-	 * Outputs the nonce field via Security, then loads the view template.
-	 * The template receives $satori_manifest_sections (array) and outputs:
-	 *   - a hidden field that admin.js serialises into before submit
-	 *   - the sections list rendered from saved data
-	 *   - <template> elements admin.js clones when adding sections/items
+	 * Renders the Controls legend meta box in the side column.
 	 *
 	 * @author Stephen Mason <steve@satori-digital.com>
 	 * @since  1.0.0
-	 * @param  \WP_Post $post  The current post object.
 	 * @return void
 	 */
 	public static function render_legend(): void {
@@ -119,6 +112,20 @@ class Meta_Box {
 		<?php
 	}
 
+	/**
+	 * Renders the Sections & Items meta box HTML.
+	 *
+	 * Outputs the nonce field via Security, then loads the view template.
+	 * The template receives $satori_manifest_sections (array) and outputs:
+	 *   - a hidden field that admin.js serialises into before submit
+	 *   - the sections list rendered from saved data
+	 *   - <template> elements admin.js clones when adding sections/items
+	 *
+	 * @author Stephen Mason <steve@satori-digital.com>
+	 * @since  1.0.0
+	 * @param  \WP_Post $post  The current post object.
+	 * @return void
+	 */
 	public static function render( \WP_Post $post ): void {
 		$satori_manifest_sections   = Manifest_Repository::get_sections( $post->ID );
 		$satori_manifest_post_field = self::POST_FIELD;
@@ -145,7 +152,9 @@ class Meta_Box {
 		}
 
 		// Verify nonce via Security; bail silently on failure.
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- verified via Security::verify_form_nonce() below.
 		$nonce = isset( $_POST[ Security::NONCE_FIELD ] )
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			? sanitize_text_field( wp_unslash( (string) $_POST[ Security::NONCE_FIELD ] ) )
 			: '';
 
@@ -161,7 +170,9 @@ class Meta_Box {
 		// Read the raw JSON. Only wp_unslash() here — sanitize_text_field() would
 		// strip angle-bracket characters and corrupt the JSON before decoding.
 		// Field-level sanitization is handled by Sanitizer after decode.
-		$raw     = isset( $_POST[ self::POST_FIELD ] )
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- nonce verified above via Security::verify_form_nonce().
+		$raw = isset( $_POST[ self::POST_FIELD ] )
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			? wp_unslash( (string) $_POST[ self::POST_FIELD ] )
 			: '[]';
 		$decoded = json_decode( $raw, true );

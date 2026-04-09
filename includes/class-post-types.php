@@ -127,10 +127,10 @@ class Post_Types {
 			self::CPT_MANIFEST,
 			self::META_SECTIONS,
 			array(
-				'single'        => true,
-				'type'          => 'string',
-				'show_in_rest'  => true,
-				'auth_callback' => static function (): bool {
+				'single'            => true,
+				'type'              => 'string',
+				'show_in_rest'      => true,
+				'auth_callback'     => static function (): bool {
 					return current_user_can( 'edit_posts' );
 				},
 				// sanitize_text_field must not be used here — it strips backslashes

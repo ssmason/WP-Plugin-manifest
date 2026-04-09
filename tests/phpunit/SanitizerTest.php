@@ -23,7 +23,7 @@ class SanitizerTest extends TestCase {
 	 * Empty input returns an empty array.
 	 */
 	public function test_empty_sections_returns_empty_array(): void {
-		$result = Sanitizer::sanitize_sections( [] );
-		$this->assertSame( [], $result );
+		$result = Sanitizer::sanitize_sections( array() );
+		$this->assertSame( array(), $result );
 	}
 }
