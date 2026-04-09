@@ -123,8 +123,8 @@
 
 		&:focus,
 		&:focus-visible {
-			outline: none;
-			box-shadow: none;
+			outline: none !important; // stylelint-disable-line declaration-no-important
+			box-shadow: none !important; // stylelint-disable-line declaration-no-important
 		}
 
 		&:hover {
