@@ -103,6 +103,7 @@ class Meta_Box {
 				<?php esc_html_e( 'Reorder sections or items', 'satori-manifest' ); ?>
 			</li>
 			<li>
+				<span class="dashicons dashicons-arrow-right-alt2"></span>
 				<span class="dashicons dashicons-arrow-down-alt2"></span>
 				<?php esc_html_e( 'Collapse / expand a section', 'satori-manifest' ); ?>
 			</li>
