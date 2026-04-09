@@ -146,6 +146,7 @@ export default function Inspector( { attributes, setAttributes } ) {
 		customCardColor,
 		showBackground,
 		cardPadding,
+		titlePadding,
 		showItemBorder,
 		titleBgColor,
 		titleFontSize,
@@ -434,6 +435,13 @@ export default function Inspector( { attributes, setAttributes } ) {
 					checked={ cardPadding }
 					onChange={ ( value ) =>
 						setAttributes( { cardPadding: value } )
+					}
+				/>
+				<ToggleControl
+					label={ __( 'Section title padding', 'satori-manifest' ) }
+					checked={ titlePadding }
+					onChange={ ( value ) =>
+						setAttributes( { titlePadding: value } )
 					}
 				/>
 				<ToggleControl

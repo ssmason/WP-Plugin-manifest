@@ -351,6 +351,16 @@ $sm-fe-radius:   6px;
 	}
 }
 
+// ─── Modifier: no title padding ──────────────────────────────────────────────
+// Applied when titlePadding is false. Removes padding from the section title.
+
+.satori-manifest-price-list.has-no-title-padding {
+
+	.satori-manifest-price-list__section-title {
+		padding-bottom: 0 !important; // stylelint-disable-line declaration-no-important
+	}
+}
+
 // ─── Modifier: no item border ─────────────────────────────────────────────────
 // Applied when showItemBorder is false. Removes border-bottom underlines from
 // list items regardless of colour scheme.

@@ -42,6 +42,7 @@ $item_font_size        = isset( $attributes['itemFontSize'] )  ? absint( $attrib
 $item_font_weight      = isset( $attributes['itemFontWeight'] ) ? sanitize_text_field( (string) $attributes['itemFontWeight'] )  : '';
 $item_font_family      = isset( $attributes['itemFontFamily'] ) ? sanitize_text_field( (string) $attributes['itemFontFamily'] )  : '';
 $card_padding          = isset( $attributes['cardPadding'] )    ? (bool) $attributes['cardPadding']                                : true;
+$title_padding         = isset( $attributes['titlePadding'] )   ? (bool) $attributes['titlePadding']                              : true;
 $show_item_border      = isset( $attributes['showItemBorder'] ) ? (bool) $attributes['showItemBorder']                            : true;
 
 // ── Build wrapper class list ──────────────────────────────────────────────────
@@ -55,7 +56,8 @@ $wrapper_classes = implode(
 			'is-scheme-' . $color_scheme,
 			! $show_background  ? 'has-no-background'  : '',
 			$title_bg_color    ? 'has-title-bg'       : '',
-			! $card_padding    ? 'has-no-card-padding' : '',
+			! $card_padding    ? 'has-no-card-padding'   : '',
+			! $title_padding   ? 'has-no-title-padding' : '',
 			! $show_item_border ? 'has-no-item-border' : '',
 		)
 	)

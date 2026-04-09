@@ -81,6 +81,7 @@ export default function Edit( { attributes, setAttributes } ) {
 		customCardColor,
 		showBackground,
 		cardPadding,
+		titlePadding,
 		showItemBorder,
 		titleBgColor,
 		titleFontSize,
@@ -97,7 +98,8 @@ export default function Edit( { attributes, setAttributes } ) {
 		`is-scheme-${ colorScheme }`,
 		! showBackground  ? 'has-no-background'   : '',
 		titleBgColor      ? 'has-title-bg'        : '',
-		! cardPadding     ? 'has-no-card-padding'  : '',
+		! cardPadding     ? 'has-no-card-padding'   : '',
+		! titlePadding    ? 'has-no-title-padding'  : '',
 		! showItemBorder  ? 'has-no-item-border'   : '',
 	]
 		.filter( Boolean )
